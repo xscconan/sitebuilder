@@ -1,0 +1,12 @@
+{
+	"/" :{
+		"name" : "index",
+		"method" : "get",
+		"resType" : "jade"
+	},
+	"/aboutus" : {
+		"name" : "aboutus",
+		"method" : "get",
+		"resType" : "jade"
+	}
+}

@@ -1,0 +1,19 @@
+!!! 5
+html(lang="en")
+	head
+		title #{lang.pageTitle}
+		meta(charset="utf-8")
+		link(rel='stylesheet', type='text/css', href='/ui/css/gray/main.css')
+		link(rel='stylesheet', type='text/css', href='/cms_modules_public/pageBoard/css/main.css')
+	body
+		#vpageShapeBox(hidden)
+		#topBar
+		#leftBar
+			.title voice pages
+			#vpageLists
+		#mainBoard
+			#drawBoard
+		#footer
+
+script(src='/ui/js/libs/raphael-2.1.0.min.js')
+script(src='/ui/js/libs/require-2.1.4.min.js', data-main="/cms_modules_public/pageBoard/js/main.js")

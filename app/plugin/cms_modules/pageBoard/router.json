@@ -1,0 +1,7 @@
+{
+	"/vpageBuild" : {
+		"name" : "vpageBuild",
+		"method" : "get",
+		"resType" : "jade"
+	}
+}
