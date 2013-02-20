@@ -103,8 +103,14 @@ define(['mainBoard', 'meta/shareObj', 'vpages/connectLine', 'UTILS/panels'], fun
 			thisVpage.group[2].hide();
 		},
 		'clickOpenDetail' : function(thisVpage, ThisDrag){
-			console.log('clicked');
-			Panels.Arrow.popup('123', 'left');
+			console.log(thisVpage.group[0]);
+			var vpageRectAttrs = thisVpage.group[0].attrs;
+			var width = 300;
+			var height = 200;
+			var x = vpageRectAttrs.x + vpageRectAttrs.width + MainBoard.DrawBoard.left + 20;
+			var y = vpageRectAttrs.y + vpageRectAttrs.height / 2 + MainBoard.DrawBoard.top - height/2;
+
+			Panels.Arrow.popup('123', 'left', x, y, width, height);
 		}
 	};
 

@@ -1,6 +1,6 @@
 {
   "wsPort" : 4444,
-  "wsPubURL" : "http://10.22.14.22:8088",
+  "wsPubURL" : "http://127.0.01:4444",
   "Log" : {
     "enableOutputConsole" : true,
     "fileLog" : {

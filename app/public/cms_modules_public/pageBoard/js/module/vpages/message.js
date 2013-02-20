@@ -1,4 +1,4 @@
-define(['vpages/vpage', 'meta/meta',  'SHARE_JS/utils'], function(VPage, Meta, Utils){
+define(['vpages/vpage', 'meta/meta', 'SHARE_JS/utils'], function(VPage, Meta, Utils){
 	var MessagePage = function(_drawBoard){
 		this.drawBoard = _drawBoard;
 		this.shape = 'rect';
