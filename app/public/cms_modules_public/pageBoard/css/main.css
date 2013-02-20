@@ -1,0 +1,52 @@
+#topBar {
+	width: 100%;
+	height: 30px;
+	background: #F5F5F5;
+    border-bottom: 1px solid #E0E0E0;
+}
+
+#leftBar {
+	background-color: #EBEBEB;
+	border-right: 1px solid #E0E0E0;
+	position: absolute;
+	top: 33px;
+	width: 220px;
+	z-index: 1000;
+}
+
+#mainBoard {
+	background-color: #EBEBEB;
+	position: relative;
+	height: 900px;
+}
+
+#drawBoard {
+	background:#fff url("../img/grid.gif");
+	border: 1px solid #CACACA;
+	height: 800px;
+	left: 303px;
+	position: relative;
+	top: 30px;
+	width: 800px;
+}
+
+#leftBar .title{
+	text-align: center;
+	font-weight: bold;
+}
+
+#vpageLists {
+	height: 300px;
+}
+
+#vpageShapeBox {
+	border:#000 dashed 1px;
+	width: 200px;
+	height: 40px;
+	position: fixed;
+	z-index: 10000;
+}
+
+#vpageShapeBox.moveIn{
+	border:#F7BB5B dashed 1px;
+}
