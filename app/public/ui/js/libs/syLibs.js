@@ -1,2 +1,1 @@
 var SYApp = {};
-var exports = {};

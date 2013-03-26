@@ -11,7 +11,6 @@ var ROUTER_ARRAY = require('../config/router.json');
 var db = require("../storge/db/db.js");
 
 
-
 var numCPUs = require('os').cpus().length;
 
 var _pluginInit = function(){
@@ -21,19 +20,35 @@ var _pluginInit = function(){
 	};
 };
 
+var _userAuthenticate = function(){
+
+}
+
 var _initHttpApp = function(){
+
 	//configure for http listener
 	app.configure(function(){
 		app.set('views', __dirname + '/../viewTmp');
 		app.set('view engine', 'jade');
-		app.use(express.cookieParser());
 		app.use(express.bodyParser());
+
+		if (CONF.enableSession)
+		{
+			app.use(express.cookieParser());
+			app.use(express.cookieSession({secret: 'sycms' }));
+		}
+		
+		app.use(express.compress());
+		app.use(express.urlencoded());
 		app.use(express.methodOverride());
 		app.use(express.static(__dirname  + '/../public'));
 		app.use(app.router);
 		app.use(express.favicon(__dirname  + '/../public/favicon.ico'));
-	});
 
+	
+	});
+	
+	app.plugins = {};
 	sysUtils.loadRouters(ROUTER_ARRAY, app, false);
 };
 

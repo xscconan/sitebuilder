@@ -1,4 +1,5 @@
-define(['mainBoard', 'meta/shareObj', 'vpages/connectLine', 'UTILS/panels'], function(MainBoard, ShareObj, ConnectLine, Panels){
+define(['mainBoard', 'meta/shareObj', 'vpages/connectLine', 'UTILS/panels', 'controller/vpageAjaxController'],
+ function(MainBoard, ShareObj, ConnectLine, Panels, VPageAjaxCtrl){
 
 	var VPageEvent = {
 		'isForMouseLine' : function(ThisDragType, isArrow){
@@ -52,6 +53,12 @@ define(['mainBoard', 'meta/shareObj', 'vpages/connectLine', 'UTILS/panels'], fun
 		
 				return this.drawConnectLine(_ConnectLine);
 			}
+			else
+			{
+				ThisVpage.x = ThisDrag.attrs.x;
+				ThisVpage.y = ThisDrag.attrs.y;
+				VPageAjaxCtrl.updateVpages(ThisVpage);
+			}
 		},
 		'mouseLineWithMove' : function(x, y, mx, my, ThisVpage, ThisDrag){
 			var mouseLineRo = ThisVpage.drawBoard.getById(ShareObj.mouseLine.roId);
@@ -75,12 +82,12 @@ define(['mainBoard', 'meta/shareObj', 'vpages/connectLine', 'UTILS/panels'], fun
 				//for make sure between start and end only one line
 				if (!_startNodeRo.connectLines[_lineUUID])
 				{
-
 					var clInstance = new ConnectLine();
 					clInstance.drawLine(_startNodeRo, _endNodeRo);
 
 					_startNodeRo.connectLines[clInstance.uuid] = clInstance;
 					_endNodeRo.connectLines[clInstance.uuid] = clInstance;
+					VPageAjaxCtrl.updateVpages(_startNodeRo);
 				}
 				_isDrawLine = true;
 			}
@@ -92,6 +99,7 @@ define(['mainBoard', 'meta/shareObj', 'vpages/connectLine', 'UTILS/panels'], fun
 		},
 		'mouseHoverIn' : function(thisVpage){
 			var startNodeVPage = ShareObj.mouseLine.startNodeRo;
+
 			if (!startNodeVPage)
 				thisVpage.group[2].show();
 			else if (ShareObj.mouseLine.startNodeRo.uuid != thisVpage.uuid){
@@ -103,14 +111,18 @@ define(['mainBoard', 'meta/shareObj', 'vpages/connectLine', 'UTILS/panels'], fun
 			thisVpage.group[2].hide();
 		},
 		'clickOpenDetail' : function(thisVpage, ThisDrag){
-			console.log(thisVpage.group[0]);
 			var vpageRectAttrs = thisVpage.group[0].attrs;
 			var width = 300;
 			var height = 200;
-			var x = vpageRectAttrs.x + vpageRectAttrs.width + MainBoard.DrawBoard.left + 20;
-			var y = vpageRectAttrs.y + vpageRectAttrs.height / 2 + MainBoard.DrawBoard.top - height/2;
+			var x = vpageRectAttrs.x + vpageRectAttrs.width + MainBoard.DrawBoard.left + 20;			var y = vpageRectAttrs.y + vpageRectAttrs.height / 2 + MainBoard.DrawBoard.top - height/2;
+			var arrowPanelId;
 
-			Panels.Arrow.popup('123', 'left', x, y, width, height);
+			var tmpPath = 'vpageContentTmp/' + thisVpage.vpage;
+			require([tmpPath], function(vpageContent){
+				$("#" + arrowPanelId).find('.container').html(vpageContent);
+			});
+
+			arrowPanelId = Panels.Arrow.ajaxPopup(thisVpage.uuid, 'left', x, y, width, height);
 		}
 	};
 

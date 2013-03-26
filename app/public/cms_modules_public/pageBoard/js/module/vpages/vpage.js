@@ -13,12 +13,12 @@ define(['jquery', 'util/util', 'meta/shareObj', 'vpages/vpageEvent'],
 		};
 	};
 
-	VPage.prototype.instanceCreate = function(){
+	VPage.prototype.instanceCreate = function(_x, _y){
 		this.group = this.drawBoard.set();
 		var thisVpage = this;
 
-		var vpItemX = this.instance.x;
-		var vpItemY = this.instance.y;
+		var vpItemX = _x || this.info.x;
+		var vpItemY = _y || this.info.y;
 
 		if (!!ShareObj.dragingVpage)
 		{
@@ -26,16 +26,19 @@ define(['jquery', 'util/util', 'meta/shareObj', 'vpages/vpageEvent'],
 			vpItemY += ShareObj.dragingVpage.y || 0;
 		}
 
+		this.x = vpItemX;
+		this.y = vpItemY;
+
 		this.group.push(
-		    this.drawBoard[this.shape](vpItemX, vpItemY, this.instance.w, this.instance.h, this.instance.r).attr({
+		    this.drawBoard[this.shape](vpItemX, vpItemY, this.info.w, this.info.h, this.info.r).attr({
 	    		stroke: this.color,
 				"fill-opacity": 100,
 				"stroke-width": 2,
 				"fill": this.color,
 				"cursor" : "move"
 		    }),
-		    this.drawBoard.text(vpItemX + this.textOffset.x, vpItemY + this.textOffset.y, this.instance.defaultText).attr({
-	    		"font-size" : this.instance.fontSize,
+		    this.drawBoard.text(vpItemX + this.textOffset.x, vpItemY + this.textOffset.y, this.title).attr({
+	    		"font-size" : this.info.fontSize,
 				"font-weight" : 'normal',
 				"text-anchor" : 'start',
 				"fill": "#fff",
@@ -85,6 +88,10 @@ define(['jquery', 'util/util', 'meta/shareObj', 'vpages/vpageEvent'],
 		this.group.dblclick(function(){
 			VPageEvent.clickOpenDetail(thisVpage, this);
 		});
+	};
+
+	VPage.prototype.removeInstance = function(){
+		this.group.remove();
 	};
 
 	return VPage;

@@ -8,5 +8,9 @@
 		"name" : "aboutus",
 		"method" : "get",
 		"resType" : "jade"
+	},
+	"/404" : {
+		"name" : "_404",
+		"method" : "get"
 	}
 }

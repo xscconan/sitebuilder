@@ -1,4 +1,5 @@
 var pluginInterface = require('../../../meta/PluginInterface.js');
+var sysMemory = require('./storge/Memory/sysMemory.js');
 
 var pageBoard = exports.pageBoard = pluginInterface.Plugin;
 
@@ -6,6 +7,7 @@ var pageBoard = exports.pageBoard = pluginInterface.Plugin;
 *	voice page creator module
 *   using svg for showing
 *	Added by michael
+*   require account plugin enabled and mongoDB enabled
 */
 
 pageBoard.prototype.moduleConfSet = function(){
@@ -14,10 +16,10 @@ pageBoard.prototype.moduleConfSet = function(){
 	this.name = "pageBoard";
 	this.displayName = 'vcc page creator';
 
-	this.view.enable = true;
+	this.router.enableJade = true;
 };
 
 
 pageBoard.prototype.moduleInit = function(){
-	// console.log(345);
+	sysMemory.initGlobalData();
 };

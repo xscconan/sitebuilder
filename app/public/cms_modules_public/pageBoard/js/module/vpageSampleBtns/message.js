@@ -1,11 +1,15 @@
 define(['vpageSampleBtns/vpageSample', 'meta/meta', 'vpages/message'], function(VpageSample, Meta, VPageClass){
-	var MessagePageSample = function(_listBoard, _drawBoard){
+	var MessagePageSample = function(_listBoard, _drawBoard, _typeId){
 		this.listBoard = _listBoard;
 		this.drawBoard = _drawBoard;
 		this.VPageClass = VPageClass;
 		this.shape = 'rect';
 		this.color = Raphael.getColor();
 		this.vpage = Meta.VPAGES.MSG_PAGE;
+		this.x = 0;
+		this.y = 0;
+		this.typeId = _typeId;
+
 		this.sample = {
 			x : 10,
 			y : 10,
@@ -20,9 +24,10 @@ define(['vpageSampleBtns/vpageSample', 'meta/meta', 'vpages/message'], function(
 	MessagePageSample.prototype = new VpageSample;
 
 	return {
-		createSampleBtn : function(listBoard, drawBoard){
-			var msgPage = new MessagePageSample(listBoard, drawBoard);
-			msgPage.sampleCreate();
+		createSampleBtn : function(listBoard, drawBoard, i, typeId){
+			var page = new MessagePageSample(listBoard, drawBoard, typeId);
+			page.sample.y += i * page.sample.h * 1.2;
+			page.sampleCreate();
 		}
 	}
 });

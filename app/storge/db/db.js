@@ -5,7 +5,7 @@ var DB_TYPE = {
 	'MANGO_DB' : 'mongo'
 };
 
-var _addGloadDb = function(db){
+var _addGlobalDb = function(db){
 	global.db = db;
 };
 
@@ -21,14 +21,12 @@ exports.init = function(){
 		return;
 
 	global.db = null;
-	exports.dbFactory().init(function(err, db) {
+	exports.dbFactory().init(CONF.db, function(err, db) {
 		if (err)
 			_cleanDBtrush(err);
 		else
-			_addGloadDb(db);
+			_addGlobalDb(db);
 	});
-	
-
 };
 
 exports.dbFactory = function(){
@@ -48,7 +46,7 @@ exports.dbFactory = function(){
 
 var _dbOperator = function(method,arg){
 	if (!!global.db)
-		exports.dbFactory()[method](arg[0], arg[1], arg[2]); 
+		exports.dbFactory()[method](global.db, arg[0], arg[1], arg[2]); 
 	else
 		_cleanDBtrush('DB not connected!');		
 };
@@ -57,25 +55,25 @@ var _dbOperator = function(method,arg){
 
 //Parameters in js arguments
 //sql db arguments: sql, param, callbackFun
-//nosql db arguments: dbEntity, callbackFun
+//nosql db arguments: dbEntity, handlerInfo
 exports.read = function(){
 	_dbOperator('read', arguments);		
 };
 
 //sql db arguments: sql, param
-//nosql db arguments: dbEntity
+//nosql db arguments: dbEntity, callbackFun
 exports.write = function(){
 	_dbOperator('write', arguments);
 };
 
 //sql db arguments: sql, param
-//nosql db arguments: dbEntity
+//nosql db arguments: dbEntity, handlerInfo
 exports.update = function(){
 	_dbOperator('update', arguments);
 };
 
 //sql db arguments: sql, param
-//nosql db arguments: dbEntity
+//nosql db arguments: dbEntity, handlerInfo
 exports.remove = function(){
 	_dbOperator('remove', arguments);
 };

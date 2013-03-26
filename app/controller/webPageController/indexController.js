@@ -1,8 +1,10 @@
 var Handler = require('../../meta/HttpHandler.js');
 
-exports.HttpHandler = Handler.HttpHandler;
+exports.HttpHandler = HttpHandler = function(){};
+HttpHandler.prototype = new Handler.HttpHandler();
 
-Handler.HttpHandler.prototype.onHandle = function(req, res){
-	console.log('sdsd');
+HttpHandler.prototype.title = 'index';
 
+HttpHandler.prototype.onHandle = function(req, res, callbackFun){
+	callbackFun();
 };

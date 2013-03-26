@@ -1,1 +1,8 @@
-123
+include ./includes/header
+#content index page
+- if (user)
+	a(href="/login?command=doLogout") logout
+	br
+	a(href="/vsiteList") vsite List
+- else
+	a(href="/login") login

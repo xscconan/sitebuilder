@@ -3,6 +3,8 @@
 	height: 30px;
 	background: #F5F5F5;
     border-bottom: 1px solid #E0E0E0;
+    position: relative;
+    z-index: 100;
 }
 
 #leftBar {
@@ -19,6 +21,13 @@
 	position: relative;
 	height: 900px;
 }
+
+#mainVsite {
+	background-color: #EBEBEB;
+	position: relative;
+	height: 900px;
+}
+
 
 #drawBoard {
 	background:#fff url("../img/grid.gif");
@@ -49,4 +58,48 @@
 
 #vpageShapeBox.moveIn{
 	border:#F7BB5B dashed 1px;
+}
+
+#topBar ol {
+	float: left;
+	height: 30px;
+	line-height: 30px;
+	margin: 0;
+}
+
+#topBar .leftBox {
+	position: absolute;
+	left: 10px;
+}
+
+#topBar .rightBox {
+	position: absolute;
+	right: 10px;
+}
+
+#operator {
+	width : 150px;
+	text-align: center;
+	cursor: pointer;
+}
+
+#operations {
+	width: 150px;
+	text-align: center;
+	background: #fff;
+	z-index: 100;
+	border-left: 1px solid #A3A2A1;
+	border-right: 1px solid #A3A2A1;
+	border-bottom: 1px solid #A3A2A1;
+}
+
+#operations li {
+	list-style: none outside none;
+}
+
+#operations a {
+	color: #727271;
+	text-decoration: none;
+	cursor: pointer;
+	font-weight: bold;
 }

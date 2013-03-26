@@ -4,18 +4,32 @@ requirejs.config({
         "SYLIB" : '/ui/js/libs',
         "META" : '/ui/js/meta',
         "UTILS" : '/ui/js/utils',
-        "SHARE_JS" : '/sharedJs/libs',
+        "SHARE_JS" : '/sharedJs',
         "jquery" : '/sharedJs/libs/jquery-1.9.0.min',
         "VPAGR" : '/cms_modules_public/pageBoard/js/module/vpages/',
     }
 });
 
 // Start the main logic.
-require(['jquery','leftBar', 'mainBoard'], function ($, leftBar, mainBoard) {
+require(['jquery','leftBar', 'mainBoard', 'topBar', 'UTILS/panels', 'controller/vpageAjaxController'], 
+    function ($, leftBar, mainBoard, topBar, Panel, VPageAjaxCtrl) {
+
     var drawBoardJo = $("#drawBoard");
     var listBoard = Raphael("vpageLists", 320, 200);
     var drawBoard = Raphael("drawBoard", drawBoardJo.width(), drawBoardJo.height());
+    mainBoard.init(drawBoard);
+    topBar.init();
 
-	leftBar.init(listBoard, drawBoard);
-	mainBoard.init(drawBoard);
+    VPageAjaxCtrl.getAllPages(function(data){
+
+        leftBar.init(listBoard, drawBoard, data.pageType);
+        mainBoard.initVPages(data, drawBoard, function(){
+            Panel.MaskLayour.remove();
+            Panel.PopupPanel.removePanelById("loadingData");
+        });
+     });
+
+    Panel.MaskLayour.insert();
+    Panel.PopupPanel.insert("loadingData", "Loading...", '<div><div class="loadDiv2"></div><br/></div>', null, false);
+
 });

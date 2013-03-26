@@ -1,9 +1,11 @@
 var Handler = require('../../meta/HttpHandler.js');
 
-exports.HttpHandler = Handler.HttpHandler;
+exports.HttpHandler = HttpHandler = function(){};
+HttpHandler.prototype = new Handler.HttpHandler();
 
-Handler.HttpHandler.prototype.onHandle = function(req, res){
+HttpHandler.prototype.title = '404 page';
 
-	return 456;
+HttpHandler.prototype.onHandle = function(req, res, callbackFun){
+	callbackFun("404");
 };
 

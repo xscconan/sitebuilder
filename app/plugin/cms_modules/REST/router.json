@@ -1,0 +1,32 @@
+{
+	"/newVPage" : {
+		"name" : "newVPage",
+		"method" : "post",
+		"resContentType" : "application/json",
+		"session" : true
+	},
+	"/newVSite" : {
+		"name" : "newVSite",
+		"method" : "post",
+		"resContentType" : "application/json",
+		"session" : true
+	},
+	"/getVPages": {
+		"name" : "getVPages",
+		"method" : "post",
+		"resContentType" : "application/json",
+		"session" : true
+	},
+	"/updateVPage": {
+		"name" : "updateVPage",
+		"method" : "post",
+		"resContentType" : "application/json",
+		"session" : true
+	},
+	"/delVSite": {
+		"name" : "delVSite",
+		"method" : "post",
+		"resContentType" : "application/json",
+		"session" : true
+	}
+}

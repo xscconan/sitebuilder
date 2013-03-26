@@ -1,19 +1,18 @@
 var mongoose = require('mongoose');
-var CONF =  require('../../config/CONFIG.json');
 
-exports.init = function(callBackFunction)
+exports.init = function(dbConf, callBackFunction)
 {
 	var connection = [];
 	connection.push('mongodb://');
-	connection.push(CONF.db.dbUser);
+	connection.push(dbConf.dbUser);
 	connection.push(':');
-	connection.push(CONF.db.dbPassword);
+	connection.push(dbConf.dbPassword);
 	connection.push('@');
-	connection.push(CONF.db.dbHost);
+	connection.push(dbConf.dbHost);
 	connection.push(':');
-	connection.push(CONF.db.dbPort);
+	connection.push(dbConf.dbPort);
 	connection.push('/');
-	connection.push(CONF.db.dbName);
+	connection.push(dbConf.dbName);
 
 	mongoose.connect(connection.join(''));
 
@@ -25,14 +24,53 @@ exports.init = function(callBackFunction)
 	callBackFunction(null, db);
 }
 
-exports.write = function(dbEntity){
-	dbEntity.save();
+exports.write = function(db, dbEntity, callbackFun){
+	dbEntity.save(function(err, docs){
+		 callbackFun(err, docs);
+	});
 }
 
-exports.read = function(dbModel, callbackFun){
-	dbModel.find({},function(err, result){
-		if (!!err)
-			global.Log.write('error', "[MYSQL READ]: %s" , err);
-		callbackFun(err, result);
-	});
+exports.read = function(db, dbModel, handlerInfo){
+	try
+	{
+		dbModel[handlerInfo.updateMethod](handlerInfo.conditions, handlerInfo.fields, handlerInfo.options, function(err, doc) {
+		  handlerInfo.callbackFun(err, doc);
+		});
+	}
+	catch(e)
+	{
+		 handlerInfo.callbackFun(e);
+		 console.log('read error');
+	}
+}
+
+exports.update = function(db, dbModel, handlerInfo){
+	try
+	{
+		dbModel[handlerInfo.updateMethod](handlerInfo.conditions, handlerInfo.updates, handlerInfo.options, function(err, doc) {
+		  handlerInfo.callbackFun(err, doc);
+		});
+	}
+	catch(e)
+	{
+	     console.log('update error');
+		 handlerInfo.callbackFun(e);
+	}
+}
+
+exports.remove = function(db, dbEntity, handlerInfo){
+	try
+	{
+		dbEntity.remove(handlerInfo.conditions, function(err){
+			if (!err)
+				handlerInfo.callbackFun("1");
+			else
+				handlerInfo.callbackFun("0");
+		});
+	}
+	catch(e)
+	{
+	     console.log('update error');
+		 handlerInfo.callbackFun("0");
+	}
 }

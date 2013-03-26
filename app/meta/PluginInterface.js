@@ -5,10 +5,10 @@ var Plugin = exports.Plugin = function(){
 	this.version = '';
 	this.name = '';
 	this.displayName = '';
-	this.view = {
-		'enable' : false,
-		'routerJson' : 'router.json',
-		'routerMethod' : 'get'
+	this.router = {
+		'enable' : true,
+		'enableJade' : false,
+		'routerJson' : 'router.json'
 	}
 };
 
@@ -16,10 +16,10 @@ Plugin.prototype.loadModule = function(httpApp){
 	this.moduleConfSet();
 
 	if (this.enable) {
-		if (this.view.enable)
+		if (this.router.enable)
 		{
 			var ROUTER_ARRAY = require('../plugin/cms_modules/' + this.name + '/router.json');
-			sysUtils.loadRouters(ROUTER_ARRAY, httpApp, true, this.name);
+			sysUtils.loadRouters(ROUTER_ARRAY, httpApp, true, this);
 		}
 		this.moduleInit();
 	};

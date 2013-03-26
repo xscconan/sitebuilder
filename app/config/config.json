@@ -22,11 +22,12 @@
   "db" : {
     "enable" : true,
     "dbType" : "mongo",
-    "dbName" : "test",
+    "dbName" : "sitebuild",
     "dbHost" : "127.0.0.1",
     "dbPort" : 27017,
     "dbUser" : "root",
     "dbPassword" : "123789"
   },
-  "enablePlugin" : true
+  "enablePlugin" : true,
+  "enableSession" : true
 }

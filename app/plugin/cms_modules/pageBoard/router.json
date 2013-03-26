@@ -2,6 +2,13 @@
 	"/vpageBuild" : {
 		"name" : "vpageBuild",
 		"method" : "get",
-		"resType" : "jade"
+		"resType" : "jade",
+		"session" : true
+	},
+	"/vsiteList" : {
+		"name" : "vsiteList",
+		"method" : "get",
+		"resType" : "jade",
+		"session" : true
 	}
 }

@@ -1,0 +1,7 @@
+{
+	"/login" : {
+		"name" : "login",
+		"method" : "all",
+		"resType" : "jade"
+	}
+}

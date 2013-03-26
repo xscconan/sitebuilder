@@ -1,4 +1,7 @@
-define(['jquery', 'meta/shareObj', 'util/util', 'mainBoard'], function($, ShareObj, Utils, MainBoard) {
+define(['jquery', 'meta/shareObj', 'util/util', 'mainBoard', 'controller/vpageAjaxController',
+ 'SHARE_JS/libs/utils', 'UTILS/panels', 'UTILS/utils', 'controller/vpageController'
+ ],
+ function($, ShareObj, Utils, MainBoard, VPageAjaxCtrl, ShareUtils, Panels, SYUtils, VPageCtrl) {
 	var VpageSample = function(){};
 	
 	var _SampleDraggerStatus = {
@@ -38,12 +41,29 @@ define(['jquery', 'meta/shareObj', 'util/util', 'mainBoard'], function($, ShareO
 				var offset = $('#vpageShapeBox').offset();
 				ShareObj.dragingVpage.x = offset.left - MainBoard.DrawBoard.left - 5;
 				ShareObj.dragingVpage.y = offset.top - MainBoard.DrawBoard.top - 40;
-				var vpageInstance = new THIS.VPageClass(THIS.drawBoard);
-				vpageInstance.instanceCreate(vpageInstance);
-				ShareObj.vpageList[vpageInstance.uuid] = vpageInstance;
+				this.createVpageByDrag(THIS);
 			}
+		},
+		createVpageByDrag : function(THIS){
+			var _VPage = {
+				title : '',
+				x :  ShareObj.dragingVpage.x,
+				y : ShareObj.dragingVpage.y,
+				typeId : THIS.typeId
+			};
+				
+			VPageAjaxCtrl.saveVPage( _VPage, function(data){
+				if (data.created == "1" && !!data.vpageId)
+				{
+					// created a new VPage
+					VPageCtrl.createVPageItem(THIS.VPageClass, THIS.drawBoard, data);
+				}
+				else
+					alert('create fail!');
 
-			ShareObj.dragingVpage = null;
+				ShareObj.dragingVpage = null;
+
+			});
 		}
 	};
 
@@ -91,6 +111,16 @@ define(['jquery', 'meta/shareObj', 'util/util', 'mainBoard'], function($, ShareO
 		},
 		function(){
 			THIS.SampleEvent.stopDrag(THIS);
+		});
+
+		st[0].dblclick(function(){
+			var x = this.attrs.x + this.attrs.width + 15;
+			var y = this.attrs.y + this.attrs.height /2 - 30;
+			var width = 200;
+			var height = 140;
+			var uuid = this.id + '_sampleBtn';
+			
+			Panels.Arrow.ajaxPopup(uuid, 'left', x, y, width, height);
 		});
 	};
 

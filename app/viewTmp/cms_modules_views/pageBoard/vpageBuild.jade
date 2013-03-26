@@ -1,13 +1,23 @@
 !!! 5
 html(lang="en")
-	head
-		title #{lang.pageTitle}
-		meta(charset="utf-8")
-		link(rel='stylesheet', type='text/css', href='/ui/css/gray/main.css')
-		link(rel='stylesheet', type='text/css', href='/cms_modules_public/pageBoard/css/main.css')
+	include ./header
 	body
 		#vpageShapeBox(hidden)
 		#topBar
+			.leftBox
+			.rightBox
+				ol
+					select(id="vSiteSwitcher")
+						option sdsd
+						option(value="createNewSite") Create New Voice Site
+						option(disabled) --------------------------
+				ol
+					#operator #{user.displayName}
+					#operations(hidden)
+						li
+							a(href="/vsiteList") vsite List
+						li 
+							a(href="/login?command=doLogout") #{lang.logout}
 		#leftBar
 			.title voice pages
 			#vpageLists
@@ -15,5 +25,5 @@ html(lang="en")
 			#drawBoard
 		#footer
 
-script(src='/ui/js/libs/raphael-2.1.0.min.js')
-script(src='/ui/js/libs/require-2.1.4.min.js', data-main="/cms_modules_public/pageBoard/js/main.js")
+	script(src='/ui/js/libs/raphael-2.1.0.min.js')
+	script(src='/ui/js/libs/require-2.1.4.min.js', data-main="/cms_modules_public/pageBoard/js/main.js")

@@ -1,7 +1,10 @@
 var Handler = require('../../meta/HttpHandler.js');
 
-exports.HttpHandler = Handler.HttpHandler;
+exports.HttpHandler = HttpHandler = function(){};
+HttpHandler.prototype = new Handler.HttpHandler();
 
-Handler.HttpHandler.prototype.onHandle = function(req, res){
-	console.log('webcrt');
+HttpHandler.prototype.title = 'about us page';
+
+HttpHandler.prototype.onHandle = function(req, res, callbackFun){
+	callbackFun();
 };

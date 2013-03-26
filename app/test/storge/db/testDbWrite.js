@@ -12,5 +12,3 @@ var personEntity = new PersonModel({name:'Krouky'});
 
 
 db.write(personEntity);
-
-db.read(PersonModel);

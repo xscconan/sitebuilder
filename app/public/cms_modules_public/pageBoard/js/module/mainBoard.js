@@ -1,4 +1,5 @@
-define(['jquery', 'meta/shareObj'], function($, ShareObj) {
+define(['jquery', 'meta/shareObj', 'controller/vpageController'], 
+    function($, ShareObj, VPageCtrl) {
 
         var _DrawBoard = {
         	'left' : null,
@@ -22,10 +23,41 @@ define(['jquery', 'meta/shareObj'], function($, ShareObj) {
 			_DrawBoard.top = parseInt(drawBoardJo.css('top'));
 			_DrawBoard.width = drawBoardJo.width();
 			_DrawBoard.height = drawBoardJo.height();
+
+        };
+
+        var _initVPages = function(data, drawBoard, callbackFun){
+            var vpagesObj = data.vsites[0].vpages || null;
+
+            if (!vpagesObj || vpagesObj.length == 0)
+                callbackFun();
+            else
+            {
+                var vpages = [];
+                for (i in vpagesObj)
+                {
+                    if (!vpagesObj[i].typeId)
+                        continue;
+
+                    var vpageFile = 'vpages/' + VPageCtrl.getVPageName(data.pageType, vpagesObj[i].typeId);
+                    vpages.push(vpageFile);
+                }
+
+                if (vpages.length > 0)
+                {
+                    require(vpages, function(){
+                        for (i in arguments)
+                            VPageCtrl.createVPageItem(arguments[i], drawBoard, vpagesObj[i]);
+                    });
+                }
+
+                callbackFun();
+            }
         };
 
         return {
-            	init: _init,
-            	'DrawBoard' : _DrawBoard
+            init: _init,
+            initVPages : _initVPages,
+            'DrawBoard' : _DrawBoard
         }
 });

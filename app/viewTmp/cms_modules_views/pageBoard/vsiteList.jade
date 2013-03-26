@@ -1,0 +1,31 @@
+!!! 5
+html(lang="en")
+	include ./header
+	body
+		#vpageShapeBox(hidden)
+		#topBar
+			.leftBox
+			.rightBox
+				ol
+					#operator #{user.displayName}
+					#operations(hidden)
+						li 
+							a(href="/login?command=doLogout") #{lang.logout}
+		#mainVsite
+			.header
+				hi VOICE SITES
+				div Create, modify, delete or copy your Voice Sites
+				div Creata Voice Site
+			.vsiteList 
+			- if (body.content.vsites.length)
+					table
+						- body.content.vsites.forEach(function(vsite){
+						tr
+							td 
+								a(href="/vpageBuild?siteId=#{vsite.vsiteId}") #{vsite.vsiteName}
+							td number
+							td a(href="/delVSite?siteId=#{vsite.vsiteId}") del
+						- })
+		#footer
+
+	script(src='/ui/js/libs/require-2.1.4.min.js', data-main="/cms_modules_public/pageBoard/js/main.js")

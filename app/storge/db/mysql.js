@@ -1,6 +1,4 @@
-var CONF =  require('../../config/CONFIG.json');
 var mysql = require('mysql');
-
 
 var _handleDisconnect = function (callBackFunction, db) {
 	db.on('error', function(err) {
@@ -14,7 +12,7 @@ var _handleDisconnect = function (callBackFunction, db) {
 
 	    global.Log.write('error', '[DB Re-connecting] lost connection: ' + err.stack);
 
-	    db = mysql.createConnection(global.db.config);
+	    db = mysql.createConnection(db.config);
 	    _handleDisconnect(callBackFunction, db);
 
 	    db.connect(function(err){
@@ -23,14 +21,14 @@ var _handleDisconnect = function (callBackFunction, db) {
 	  });
 };
 
-exports.init = function(callBackFunction)
+exports.init = function(dbConf, callBackFunction)
 {
 	var option = {};
-	option.host = CONF.db.dbHost;
-	option.port =  CONF.db.dbPort;
-	option.user =  CONF.db.dbUser;
-	option.password =  CONF.db.dbPassword;
-	option.database =  CONF.db.dbName;
+	option.host = dbConf.dbHost;
+	option.port =  dbConf.dbPort;
+	option.user =  dbConf.dbUser;
+	option.password =  dbConf.dbPassword;
+	option.database = dbConf.dbName;
 	option.insecureAuth = true;
 	option.debug = false;
 	
@@ -42,27 +40,27 @@ exports.init = function(callBackFunction)
 
 };
 
-exports.read = function(sql, param, callbackFun){
-	var query = global.db.query(sql, param, function(err, result) {
+exports.read = function(db, sql, param, callbackFun){
+	var query = db.query(sql, param, function(err, result) {
 		if (!!err)
 			global.Log.write('error', "[MYSQL READ]: %s [SQL]: %s" , err , query.sql);
 		callbackFun(result);
 	});
 };
 
-exports.write = function(sql, param){
-	var query = global.db.query(sql, param, function(err) {
+exports.write = function(db, sql, param){
+	var query = db.query(sql, param, function(err) {
 		if (!!err)
 			global.Log.write('error', "[MYSQL WRITE]: %s [SQL]: %s" , err , query.sql);
 	});
 };
 
-exports.update = function(sql, param){
+exports.update = function(db, sql, param){
 	
 };
 
-exports.remove = function(sql, param){
-	var query = global.db.query(sql, param, function(err) {
+exports.remove = function(db, sql, param){
+	var query = db.query(sql, param, function(err) {
 		if (!!err)
 			global.Log.write('error', "[MYSQL DELETE]: %s [SQL]: %s" , err , query.sql);
 	});
