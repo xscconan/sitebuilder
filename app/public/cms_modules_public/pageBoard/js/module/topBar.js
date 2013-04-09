@@ -1,4 +1,5 @@
-define(['jquery', 'UTILS/panels', 'vpageContentTmp/siteCreatePanel'], function($, Panel, SiteCreatePanelTmp) {
+define(['jquery', 'UTILS/panels', 'vpageContentTmp/siteCreatePanel',  'util/util'], 
+  function($, Panel, SiteCreatePanelTmp, Utils) {
     
     var _DO_CREATER_NEW_SITE = "createNewSite";
 
@@ -9,6 +10,41 @@ define(['jquery', 'UTILS/panels', 'vpageContentTmp/siteCreatePanel'], function($
       });
       Panel.PopupPanel.btnsEventListen(SiteCreatePanelTmp.buttonsObj, _DO_CREATER_NEW_SITE);
     };
+
+    var _GroupCreator = {
+      init : function(){
+         var vpageShapeBoxJo = $('#vpageShapeBox');
+         var createGroupJo =  $("#createGroup");
+         createGroupJo.mousedown(function(event){
+            vpageShapeBoxJo.fadeIn();
+            vpageShapeBoxJo.offset({top: event.pageY -20, left: event.pageX -20});
+            $(this).data('moveType', 'group');
+         });
+
+          $('body').mousemove(function(event){
+            var _isMoveInDropPlace = Utils.isMoveInDrawBoard(event.pageX, event.pageY -20 );
+            vpageShapeBoxJo.offset({top: event.pageY -20, left: event.pageX -20});
+            if (_isMoveInDropPlace)
+                vpageShapeBoxJo.addClass('moveIn');
+            else
+                vpageShapeBoxJo.removeClass('moveIn');
+          }).mouseup(function(event){
+              vpageShapeBoxJo.fadeOut();
+              var _isMoveInDropPlace = Utils.isMoveInDrawBoard(event.pageX, event.pageY -20 );
+              
+               if (_isMoveInDropPlace)
+                  _GroupCreator.preCreateNewGroup();
+               createGroupJo.data('moveType', '');
+         });
+      },
+      preCreateNewGroup : function(){
+          var moveType = $("#createGroup").data('moveType');
+          if (moveType == "group")
+          {
+            alert(123);
+          }
+      }
+    }
 
     this._init = function(){
        $("#operator").mouseover(function(){
@@ -25,9 +61,12 @@ define(['jquery', 'UTILS/panels', 'vpageContentTmp/siteCreatePanel'], function($
        			_doCreateNewSite();
        });
 
+       _GroupCreator.init();
+
     };
 
     return {
-        init: _init
+        init: _init,
+        doCreateNewSite : _doCreateNewSite
     }
 });

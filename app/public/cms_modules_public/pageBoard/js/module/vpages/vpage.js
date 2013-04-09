@@ -17,13 +17,13 @@ define(['jquery', 'util/util', 'meta/shareObj', 'vpages/vpageEvent'],
 		this.group = this.drawBoard.set();
 		var thisVpage = this;
 
-		var vpItemX = _x || this.info.x;
-		var vpItemY = _y || this.info.y;
+		var vpItemX = parseInt(_x) || this.info.x;
+		var vpItemY = parseInt(_y) || this.info.y;
 
 		if (!!ShareObj.dragingVpage)
 		{
-			vpItemX += ShareObj.dragingVpage.x || 0;
-			vpItemY += ShareObj.dragingVpage.y || 0;
+			vpItemX = parseInt(ShareObj.dragingVpage.x) || 0;
+			vpItemY = parseInt(ShareObj.dragingVpage.y) || 0;
 		}
 
 		this.x = vpItemX;
@@ -50,6 +50,10 @@ define(['jquery', 'util/util', 'meta/shareObj', 'vpages/vpageEvent'],
 				cursor: "pointer"
 			})
 		);
+
+		if (!!this.comments || this.comments.length == 0)
+			this.group.attr( { "title" : this.comments} );
+
 
 		this.group[1].resetPostion = function(ThisVpage){
 			var _x =  this.attrs.x + ThisVpage.textOffset.x;
@@ -93,6 +97,12 @@ define(['jquery', 'util/util', 'meta/shareObj', 'vpages/vpageEvent'],
 	VPage.prototype.removeInstance = function(){
 		this.group.remove();
 	};
+
+	VPage.prototype.resetUI = function(){
+		this.group.attr( { "title" : this.comments} );
+		this.group[1].attr('text', this.title);
+	};
+
 
 	return VPage;
 });

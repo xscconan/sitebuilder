@@ -4,7 +4,7 @@ define(['VPAGR/vpageEvent', 'meta/shareObj'],  function(VPageEvent, ShareObj){
 		this.line = null;
 		this.color = "#16995C";
 		this.uuid = null;
-		this.TriH = 9;
+		this.TriH = 6;
 
 		this.startVPageId = null;
 		this.stopVPageId = null;
@@ -19,14 +19,6 @@ define(['VPAGR/vpageEvent', 'meta/shareObj'],  function(VPageEvent, ShareObj){
 		var _endRectRo = endNodeRo.group[0];
 		var _path = this.getLinePath(startNodeRo.group[0], endNodeRo.group[0]);
 		var _pathLine = _path.join(",");
-
-		var _pathLen = _path.length;
-		var _fx = _path[_pathLen-4] - this.TriH;
-		var _fy = _path[_pathLen-5] - this.TriH;
-		var _tx = _path[_pathLen-2];
-		var _ty = _path[_pathLen-1];
-		var _pathTri = this.getTrianglePath(_fx, _fy , _tx, _ty);
-
 		var _bg = "";
 
 		this.startVPageId = startNodeRo.uuid;
@@ -40,8 +32,15 @@ define(['VPAGR/vpageEvent', 'meta/shareObj'],  function(VPageEvent, ShareObj){
         };
 
         this.line.line.push(
-        	_drawBoard.path(_pathLine).attr({stroke: _color, fill: "none"}),
-        	_drawBoard.path(_pathTri).attr({stroke: _color, fill: _color, "cursor" : "move"})
+        	_drawBoard.path(_pathLine).attr({stroke: _color, fill: "none"})
+        	
+        );
+
+        var triPoints = this.getTriPointsByLineRo(this.line.line[0], _path);
+		var _pathTri = this.getTrianglePath(triPoints.fx, triPoints.fy , triPoints.tx, triPoints.ty);
+
+         this.line.line.push(
+          	_drawBoard.path(_pathTri).attr({stroke: _color, fill: _color, "cursor" : "move"})
         );
 
         ThisLine = this;
@@ -84,7 +83,7 @@ define(['VPAGR/vpageEvent', 'meta/shareObj'],  function(VPageEvent, ShareObj){
 			lineRo.remove();
 			arrowRo.remove();
 
-			VPageEvent.stopDragAndDrawLine(startNodeRo, this, true, ConnectLine);
+			VPageEvent.stopDragAndDrawLine(startNodeRo, this, true);
 		});
 
 
@@ -178,20 +177,32 @@ define(['VPAGR/vpageEvent', 'meta/shareObj'],  function(VPageEvent, ShareObj){
 		return pathArr;
 	};
 
+	ConnectLine.prototype.getTriPointsByLineRo = function(lineRo, linePath){
+		var length = lineRo.getTotalLength() - 3;
+	    var triStartPoint = lineRo.getPointAtLength(length);
+	    var _lineLen = linePath.length;
+
+	    return {
+	    	fx : triStartPoint.x,
+			fy : triStartPoint.y,
+			tx : linePath[_lineLen-2],
+			ty : linePath[_lineLen-1]
+	    }
+
+	};
+
+
 	ConnectLine.prototype.reSetLine = function(){
 		var _path = this.getLinePath(this.line.from, this.line.to);
+
 		var _pathLine = _path.join(",");
-
-		var _pathLen = _path.length;
-		var _fx = _path[_pathLen-4] -this.TriH;
-		var _fy = _path[_pathLen-5] -this.TriH;
-		var _tx = _path[_pathLen-2];
-		var _ty = _path[_pathLen-1];
-		var _pathTri = this.getTrianglePath(_fx, _fy , _tx, _ty);
-
 
 		this.line.bg && this.line.bg.attr({path: _pathLine});
 	    this.line.line[0].attr({path: _pathLine});
+
+		var triPoints = this.getTriPointsByLineRo(this.line.line[0], _path);
+		var _pathTri = this.getTrianglePath(triPoints.fx, triPoints.fy , triPoints.tx, triPoints.ty);
+
 	    this.line.line[1].attr({path: _pathTri});
 	};
 

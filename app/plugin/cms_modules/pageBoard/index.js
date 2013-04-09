@@ -7,7 +7,7 @@ var pageBoard = exports.pageBoard = pluginInterface.Plugin;
 *	voice page creator module
 *   using svg for showing
 *	Added by michael
-*   require account plugin enabled and mongoDB enabled
+*   require account, REST plugin enabled and mongoDB enabled
 */
 
 pageBoard.prototype.moduleConfSet = function(){

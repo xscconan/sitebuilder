@@ -48,10 +48,15 @@ define(['jquery', 'SYLIB/mustache', 'SHARE_JS/libs/utils'], function($, Mustache
 			}
 		},
 		PopupPanel : {
-			insert : function(_id, _title, _content, closeEventCallBakFun, _hasCloseBtn){
+			insertLoadingPanel : function(_id, _title, closeEventCallBakFun, _noCloseBtn){
+				
+				var content = '<div>'+Panels.ajaxLoadingIcon+'<br/></div>'
+				this.insert(_id, _title, content, closeEventCallBakFun, _noCloseBtn);
+			},
+			insert : function(_id, _title, _content, closeEventCallBakFun, _noCloseBtn){
 				var title = _title || "";
 				var content = _content || Panels.ajaxLoadingIcon;
-				var closeBtn = (!!_hasCloseBtn)?Panels.closeBtn:"";
+				var closeBtn = (!_noCloseBtn)?Panels.closeBtn:"";
 
 				var panelsTmp = '<div id="{{id}}" class="popupBox box-shadow"><div class="body"><div class="title">{{title}}'+closeBtn+'</div><div class="container">##content##</div></div></div>';
 				var contents = Mustache.render(panelsTmp, {id : _id, title: title});
@@ -67,6 +72,17 @@ define(['jquery', 'SYLIB/mustache', 'SHARE_JS/libs/utils'], function($, Mustache
 						closeEventCallBakFun();
 				});
 			},
+			updateContent : function(_parentBoxId, _title, _content, _buttonObj)
+			{
+				var thisPanelJo = $("#"+ _parentBoxId);
+				if (!!_title)
+					thisPanelJo.find('.title').html(_title);
+				if (!!_content)
+					thisPanelJo.find('.container').html(_content);
+
+				if (!!_buttonObj)
+					this.btnsEventListen(_buttonObj, _parentBoxId);
+			},
 			removePanelById : function(id){
 				jQuery("#"+ id).fadeOut('1000').remove();
 			},
@@ -77,25 +93,54 @@ define(['jquery', 'SYLIB/mustache', 'SHARE_JS/libs/utils'], function($, Mustache
 				var content = "<div class='buttonsPanel'>{{#buttons}}<button id='{{id}}' class='button blue normal' type='button'>{{text}}</button>{{/buttons}}</div>";
 				return Mustache.render(content, buttonObj);
 			},
+			/**btnsEventListen
+			*buttonObj:
+			* id : button dom id, String
+			* text: text in button, String
+			* clickEventFun:  event handle after button clicked, Function
+			* validation: refer values valdation, Function
+			* isAjax: insert ajax loading mask layour, Bool
+			* isDirectClose: direct close the popup panel after button clicked, Bool
+			**/
 			btnsEventListen : function(buttonObj, parentBoxId) {
 				if (!buttonObj)
 					return;
+
 				var buttons =  buttonObj.buttons;
 
 				for (i in buttons)
 				{
 					var button =  buttons[i];
+
 					if (!!button.clickEventFun)
 					{
-						$("#" + button.id).click(function(){
+						var newBtnJo = $("#" + button.id);
+						
+						//already exist
+						if (!!newBtnJo.data('buttonJo'))
+							continue;
 
-							button.clickEventFun();
-							if (button.isAjax)
+						newBtnJo.data('buttonJo', button);
+						newBtnJo.click(function(){
+							var tmpThisBtn = $(this).data('buttonJo');
+							var parentBoxJo = $("#" + parentBoxId);
+							if (
+									!tmpThisBtn.validation || 
+								 	(!!tmpThisBtn.validation && tmpThisBtn.validation())
+								  )
 							{
-								var targetJo = $("#" + parentBoxId).find(".body");
-								var id = button.id + "_ajaxLoading";
-								Panels.AjaxLoadingLayour.insert(targetJo, id);
+								if (!!tmpThisBtn.isAjax)
+								{
+									var targetJo = parentBoxJo.find(".container");
+									var id = tmpThisBtn.id + "_ajaxLoading";
+									Panels.AjaxLoadingLayour.insert(targetJo, id);
+								}
+								else if (!!tmpThisBtn.isDirectClose)
+									parentBoxJo.remove();
+
+								tmpThisBtn.clickEventFun(parentBoxId);
 							}
+		
 						});
 					}
 			

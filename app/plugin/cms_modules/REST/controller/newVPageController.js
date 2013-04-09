@@ -12,22 +12,24 @@ HttpHandler.prototype = new Handler.HttpHandler();
 HttpHandler.prototype.onHandle = function(req, res, callbackFun){
 	var accountId =  req.session.user.uuid;
 	var siteId = req.body.siteId;
+	var _vpageId = ShareUtils.UUID();
 
 	var _vpageObj = {
-		vpageId : ShareUtils.UUID(),
+		vsiteId : siteId,
+		vpageId : _vpageId,
 		title :  req.body.title,
 		x : req.body.x,
 		y : req.body.y,
-		typeId : req.body.typeId
+		typeId : req.body.typeId,
+		referEndNode : Array
 	}
 
-
-	var VSiteModel = VSiteDBCtrl.getVSiteModel();
+	var VSiteModel = VSiteDBCtrl.getVPageListModel();
 
 	var updateHandlerInfo = new dbHandlers.UpdateHandlerInfo(
 		"update",
-		{"accountId" : accountId, "vsites.vsiteId": siteId },
-		{$push : {"vsites.$.vpages" : _vpageObj} },
+		{ "vpageId": _vpageId },
+		_vpageObj,
 		function(err, doc){
 			if (!err && doc == 1)
 			{
@@ -39,7 +41,8 @@ HttpHandler.prototype.onHandle = function(req, res, callbackFun){
 				console.log(err);
 				callbackFun("0");
 			}
-		}
+		},
+		{upsert : true }
 	);
 
 	db.update(VSiteModel, updateHandlerInfo);

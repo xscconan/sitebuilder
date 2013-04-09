@@ -8,21 +8,15 @@ HttpHandler.prototype = new Handler.HttpHandler();
 
 
 HttpHandler.prototype.onHandle = function(req, res, callbackFun){
-	var accountId =  req.session.user.uuid;
 	var siteId = req.body.siteId;
 
 	var conditions = {
-		"accountId" : accountId,
-		"vsites.vsiteId" : siteId
+		"vsiteId" : siteId
 	};
 
-	var fields = {
-		"vsites.$.vsiteId" : siteId
-	};
-
-	VSiteDBCtrl.findVSites(conditions, fields, function(err, doc){
+	VSiteDBCtrl.findVPageList(conditions, null, function(err, doc){
 		var returnData = {};
-		returnData.vsites = doc[0].vsites;
+		returnData.vpageList = doc;
 		returnData.pageType = global.pageBoard.pageType;
 		callbackFun(returnData);
 	});

@@ -30,6 +30,6 @@ require(['jquery','leftBar', 'mainBoard', 'topBar', 'UTILS/panels', 'controller/
      });
 
     Panel.MaskLayour.insert();
-    Panel.PopupPanel.insert("loadingData", "Loading...", '<div><div class="loadDiv2"></div><br/></div>', null, false);
+    Panel.PopupPanel.insertLoadingPanel("loadingData", "Loading...", null, true);
 
 });

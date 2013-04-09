@@ -4,7 +4,7 @@ define(['vpageSampleBtns/vpageSample', 'meta/meta', 'vpages/message'], function(
 		this.drawBoard = _drawBoard;
 		this.VPageClass = VPageClass;
 		this.shape = 'rect';
-		this.color = Raphael.getColor();
+		this.color = '#BF5600';
 		this.vpage = Meta.VPAGES.MSG_PAGE;
 		this.x = 0;
 		this.y = 0;

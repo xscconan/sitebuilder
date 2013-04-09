@@ -34,7 +34,7 @@ exports.read = function(db, dbModel, handlerInfo){
 	try
 	{
 		dbModel[handlerInfo.updateMethod](handlerInfo.conditions, handlerInfo.fields, handlerInfo.options, function(err, doc) {
-		  handlerInfo.callbackFun(err, doc);
+			handlerInfo.callbackFun(err, doc);
 		});
 	}
 	catch(e)
@@ -58,10 +58,10 @@ exports.update = function(db, dbModel, handlerInfo){
 	}
 }
 
-exports.remove = function(db, dbEntity, handlerInfo){
+exports.remove = function(db, dbModel, handlerInfo){
 	try
 	{
-		dbEntity.remove(handlerInfo.conditions, function(err){
+		dbModel.remove(handlerInfo.conditions, function(err){
 			if (!err)
 				handlerInfo.callbackFun("1");
 			else

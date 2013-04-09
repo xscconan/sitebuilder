@@ -6,6 +6,7 @@ define(function(){
 			'startNodeRo' : null,
 			'endNodeRo' : null
 		},
+		'drawBoard' : {},
 		'vpageList' : {}
 	};
 

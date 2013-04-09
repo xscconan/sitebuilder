@@ -1,5 +1,5 @@
-define(['mainBoard', 'meta/shareObj', 'vpages/connectLine', 'UTILS/panels', 'controller/vpageAjaxController'],
- function(MainBoard, ShareObj, ConnectLine, Panels, VPageAjaxCtrl){
+define(['meta/shareObj', 'vpages/connectLine', 'UTILS/panels', 'controller/vpageAjaxController', 'vpageContentTmp/vpage'],
+ function(ShareObj, ConnectLine, Panels, VPageAjaxCtrl, vpageEditTmp){
 
 	var VPageEvent = {
 		'isForMouseLine' : function(ThisDragType, isArrow){
@@ -14,7 +14,7 @@ define(['mainBoard', 'meta/shareObj', 'vpages/connectLine', 'UTILS/panels', 'con
 				var mouseLineRo = ThisVpage.drawBoard.getById(ShareObj.mouseLine.roId);
 				mouseLineRo.show();
 				ShareObj.mouseLine.startNodeRo = ThisVpage;
-			}		
+			}
 		},
 		'move' : function(x, y, mx, my, ThisVpage, ThisDrag, isArrow){
 			if (this.isForMouseLine(ThisDrag.type, isArrow))
@@ -25,7 +25,7 @@ define(['mainBoard', 'meta/shareObj', 'vpages/connectLine', 'UTILS/panels', 'con
 			else
 			{
 				//body move
-				var att = {x: mx - MainBoard.DrawBoard.left - 20, y: my - MainBoard.DrawBoard.top -50};
+				var att = {x: mx - ShareObj.drawBoard.left - 20, y: my - ShareObj.drawBoard.top -50};
 				var count = ThisVpage.group.length;
 
 	            for (var i = 0; i < count; i++)
@@ -44,58 +44,51 @@ define(['mainBoard', 'meta/shareObj', 'vpages/connectLine', 'UTILS/panels', 'con
             	ThisVpage.drawBoard.safari();
 			}
 		},
-		'stopDragAndDrawLine' : function(ThisVpage, ThisDrag, isArrow, _ConnectLine){
+		'stopDragAndDrawLine' : function(ThisVpage, ThisDrag, isArrow){
 			if (this.isForMouseLine(ThisDrag.type, isArrow))
 			{
 				ThisVpage.group[2].hide();
 				var mouseLineRo = ThisVpage.drawBoard.getById(ShareObj.mouseLine.roId);
 				mouseLineRo.hide().attr({path: 'M0,0L0,0'});
 		
-				return this.drawConnectLine(_ConnectLine);
+				return this.drawConnectLine();
 			}
 			else
 			{
-				ThisVpage.x = ThisDrag.attrs.x;
-				ThisVpage.y = ThisDrag.attrs.y;
-				VPageAjaxCtrl.updateVpages(ThisVpage);
+				var gapW = ThisDrag.attrs.x - ThisVpage.x;
+				var gapH = ThisDrag.attrs.y - ThisVpage.y;
+				if (ThisDrag.type == "text")
+				{
+					gapW -= ThisVpage.textOffset.x;
+					gapH -= ThisVpage.textOffset.y;
+				}
+
+				if (Math.abs(gapW)> 2 || Math.abs(gapH)> 2 )
+				{	
+					ThisVpage.x = ThisDrag.attrs.x;
+					ThisVpage.y = ThisDrag.attrs.y;
+					VPageAjaxCtrl.updateVpages(ThisVpage);
+				}
 			}
+		},
+		drawConnectLine : function(){
+			require(['controller/vpageController'], function(VPageCtrl){
+				var _startNodeRo = ShareObj.mouseLine.startNodeRo;
+				var _endNodeRo = ShareObj.mouseLine.endNodeRo;
+				var _isDrawLine = VPageCtrl.drawConnectLine(_startNodeRo, _endNodeRo, true);
+
+				ShareObj.mouseLine.startNodeRo = null;
+				ShareObj.mouseLine.endNodeRo = null;
+			});
 		},
 		'mouseLineWithMove' : function(x, y, mx, my, ThisVpage, ThisDrag){
 			var mouseLineRo = ThisVpage.drawBoard.getById(ShareObj.mouseLine.roId);
 			var connectorIconRo = ThisVpage.group[2];
-			var lineToX = mx - MainBoard.DrawBoard.left;
-			var lineToY = my - MainBoard.DrawBoard.top - 20;
+			var lineToX = mx - ShareObj.drawBoard.left;
+			var lineToY = my - ShareObj.drawBoard.top - 20;
 			var _path = ['M', connectorIconRo.attrs.x, ',' , connectorIconRo.attrs.y, 'L', lineToX,",", lineToY].join('');
 
 			mouseLineRo.attr({path: _path});
-		},
-		'drawConnectLine' : function(_ConnectLine){
-			var _startNodeRo = ShareObj.mouseLine.startNodeRo;
-			var _endNodeRo = ShareObj.mouseLine.endNodeRo;
-			var _isDrawLine = false;
-			
-			ConnectLine = typeof ConnectLine == "undefined"? _ConnectLine: ConnectLine;
-
-			if (_startNodeRo != null && _endNodeRo != null)
-			{
-				var _lineUUID = _startNodeRo.uuid + _endNodeRo.uuid;
-				//for make sure between start and end only one line
-				if (!_startNodeRo.connectLines[_lineUUID])
-				{
-					var clInstance = new ConnectLine();
-					clInstance.drawLine(_startNodeRo, _endNodeRo);
-
-					_startNodeRo.connectLines[clInstance.uuid] = clInstance;
-					_endNodeRo.connectLines[clInstance.uuid] = clInstance;
-					VPageAjaxCtrl.updateVpages(_startNodeRo);
-				}
-				_isDrawLine = true;
-			}
-
-			ShareObj.mouseLine.startNodeRo = null;
-			ShareObj.mouseLine.endNodeRo = null;
-
-			return _isDrawLine;
 		},
 		'mouseHoverIn' : function(thisVpage){
 			var startNodeVPage = ShareObj.mouseLine.startNodeRo;
@@ -114,15 +107,12 @@ define(['mainBoard', 'meta/shareObj', 'vpages/connectLine', 'UTILS/panels', 'con
 			var vpageRectAttrs = thisVpage.group[0].attrs;
 			var width = 300;
 			var height = 200;
-			var x = vpageRectAttrs.x + vpageRectAttrs.width + MainBoard.DrawBoard.left + 20;			var y = vpageRectAttrs.y + vpageRectAttrs.height / 2 + MainBoard.DrawBoard.top - height/2;
-			var arrowPanelId;
+			var x = vpageRectAttrs.x + vpageRectAttrs.width + ShareObj.drawBoard.left + 20;			var y = vpageRectAttrs.y + vpageRectAttrs.height / 2 + ShareObj.drawBoard.top - height/2;
 
-			var tmpPath = 'vpageContentTmp/' + thisVpage.vpage;
-			require([tmpPath], function(vpageContent){
-				$("#" + arrowPanelId).find('.container').html(vpageContent);
-			});
-
-			arrowPanelId = Panels.Arrow.ajaxPopup(thisVpage.uuid, 'left', x, y, width, height);
+			var arrowPanelId = Panels.Arrow.ajaxPopup(thisVpage.uuid, 'left', x, y, width, height);
+			var vpageEditTmpObj = vpageEditTmp.getTmp(thisVpage);
+			$("#" + arrowPanelId).find('.container').html(vpageEditTmpObj.content);
+			Panels.PopupPanel.btnsEventListen(vpageEditTmpObj.buttonsObj, arrowPanelId);
 		}
 	};
 

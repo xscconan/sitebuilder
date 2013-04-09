@@ -73,7 +73,7 @@ exports.update = function(){
 };
 
 //sql db arguments: sql, param
-//nosql db arguments: dbEntity, handlerInfo
+//nosql db arguments: dbModel, handlerInfo
 exports.remove = function(){
 	_dbOperator('remove', arguments);
 };

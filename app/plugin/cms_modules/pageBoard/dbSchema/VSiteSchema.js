@@ -1,19 +1,24 @@
-var VSiteSchema = {
+var SiteBuild = {};
+
+SiteBuild.VSiteSchema = {
 	accountId : String,
 	vsites : [{
 		vsiteId : String,
-		vsiteName : String,
-		vpages :[{
-			vpageId : String,
-			title : String,
-			x : Number,
-			y : Number,
-			typeId : String,
-			referEndNode : Array
-		}]
+		vsiteName : String
 	}]
 	
 };
 
+SiteBuild.VPageListSchema = {
+	vsiteId : String,
+	vpageId : String,
+	title : String,
+	x : Number,
+	y : Number,
+	typeId : String,
+	comments : String,
+	referEndNode : Array
+};
 
-exports.VSiteSchema = VSiteSchema;
+
+exports.SiteBuild = SiteBuild;

@@ -4,7 +4,7 @@ define(['vpageSampleBtns/vpageSample', 'meta/meta', 'vpages/menu'], function(Vpa
 		this.drawBoard = _drawBoard;
 		this.VPageClass = VPageClass;
 		this.shape = 'rect';
-		this.color = Raphael.getColor();
+		this.color = '#7CBF00';
 		this.vpage = Meta.VPAGES.MENU_PAGE;
 		this.x = 0;
 		this.y = 0;

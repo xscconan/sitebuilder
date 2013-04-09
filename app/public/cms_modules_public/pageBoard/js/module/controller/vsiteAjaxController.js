@@ -8,6 +8,12 @@ define(['jquery'], function($){
 			$.post('/newVSite', VSiteObj, function(data){
 				callbackFun(data);
 			});
+		},
+		delVSite : function(_siteId, callbackFun){
+			$.post('/delVSite', {siteId : _siteId}, function(data){
+				alert(data);
+				callbackFun(data);
+			});
 		}
 
 

@@ -15,17 +15,19 @@ html(lang="en")
 			.header
 				hi VOICE SITES
 				div Create, modify, delete or copy your Voice Sites
-				div Creata Voice Site
-			.vsiteList 
-			- if (body.content.vsites.length)
+				#createVSite Creata Voice Site
+			.vsiteList
+			- if (body.content.vsites && body.content.vsites.length)
 					table
 						- body.content.vsites.forEach(function(vsite){
-						tr
+						tr(id="vsite_#{vsite.vsiteId}")
 							td 
 								a(href="/vpageBuild?siteId=#{vsite.vsiteId}") #{vsite.vsiteName}
 							td number
-							td a(href="/delVSite?siteId=#{vsite.vsiteId}") del
+							td
+								.vsiteOpBtns
+									span(class="delVSiteBtn iconBtn closeBtn",vsiteId="#{vsite.vsiteId}") 
 						- })
 		#footer
 
-	script(src='/ui/js/libs/require-2.1.4.min.js', data-main="/cms_modules_public/pageBoard/js/main.js")
+	script(src='/ui/js/libs/require-2.1.4.min.js', data-main="/cms_modules_public/pageBoard/js/vsiteListMain.js")

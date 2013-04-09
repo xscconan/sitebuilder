@@ -2,10 +2,13 @@ define(['vpages/vpage', 'meta/meta', 'SHARE_JS/libs/utils'], function(VPage, Met
 	var MessagePage = function(_drawBoard, _VPage){
 		this.drawBoard = _drawBoard;
 		this.shape = 'rect';
-		this.color = Raphael.getColor();
+		this.color = '#BF5600';
 		this.vpage = Meta.VPAGES.MSG_PAGE;
 		this.uuid = _VPage.vpageId;
 		this.connectLines = {};
+		this.typeId = _VPage.typeId;
+		this.referEndNode = _VPage.referEndNode || [];
+		this.comments = _VPage.comments || "";
 
 		this.info = {
 			x : 10,

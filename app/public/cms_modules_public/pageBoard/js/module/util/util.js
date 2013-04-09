@@ -1,12 +1,12 @@
-define([ 'mainBoard'], function(MainBoard){
+define([ 'meta/shareObj'], function(ShareObj){
 	var Utils = {
 		'isMoveInDrawBoard' : function(x, y){
 			var t_left = x + 20;
 			var t_top = y;
-			var d_left = MainBoard.DrawBoard.left;
-			var d_top = MainBoard.DrawBoard.top;
-			var d_w = MainBoard.DrawBoard.width;
-			var d_h = MainBoard.DrawBoard.height;
+			var d_left = ShareObj.drawBoard.left;
+			var d_top = ShareObj.drawBoard.top;
+			var d_w = ShareObj.drawBoard.width;
+			var d_h = ShareObj.drawBoard.height;
 
 			if (
 					t_left > d_left && (t_left - 160) < (d_left + d_w) &&

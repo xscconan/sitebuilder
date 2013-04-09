@@ -1,12 +1,6 @@
 define(['jquery', 'meta/shareObj', 'controller/vpageController'], 
     function($, ShareObj, VPageCtrl) {
 
-        var _DrawBoard = {
-        	'left' : null,
-        	'top' : null,
-        	'width' : 0,
-        	'height' : 0
-        };
 
         var _init = function(drawBoard){
 
@@ -19,21 +13,25 @@ define(['jquery', 'meta/shareObj', 'controller/vpageController'],
             ShareObj.mouseLine.roId = mouseLine.id;
 
 			var drawBoardJo = $('#drawBoard');
-			_DrawBoard.left = parseInt(drawBoardJo.css('left'));
-			_DrawBoard.top = parseInt(drawBoardJo.css('top'));
-			_DrawBoard.width = drawBoardJo.width();
-			_DrawBoard.height = drawBoardJo.height();
 
+            ShareObj.drawBoard = {
+                'left' : parseInt(drawBoardJo.css('left')),
+                'top' : parseInt(drawBoardJo.css('top')),
+                'width' : drawBoardJo.width(),
+                'height' : drawBoardJo.height()
+            };
         };
 
         var _initVPages = function(data, drawBoard, callbackFun){
-            var vpagesObj = data.vsites[0].vpages || null;
+
+            var vpagesObj = data.vpageList || null;
 
             if (!vpagesObj || vpagesObj.length == 0)
                 callbackFun();
             else
             {
                 var vpages = [];
+               
                 for (i in vpagesObj)
                 {
                     if (!vpagesObj[i].typeId)
@@ -46,8 +44,15 @@ define(['jquery', 'meta/shareObj', 'controller/vpageController'],
                 if (vpages.length > 0)
                 {
                     require(vpages, function(){
+                        var vpageInstances = [];
                         for (i in arguments)
-                            VPageCtrl.createVPageItem(arguments[i], drawBoard, vpagesObj[i]);
+                        {
+                            var Vpage = VPageCtrl.createVPageItem(arguments[i], drawBoard, vpagesObj[i]);
+                            vpageInstances.push(Vpage);
+                        }
+
+                        // init vpage connect lines
+                        VPageCtrl.initConnectLines(vpageInstances);
                     });
                 }
 
@@ -57,7 +62,6 @@ define(['jquery', 'meta/shareObj', 'controller/vpageController'],
 
         return {
             init: _init,
-            initVPages : _initVPages,
-            'DrawBoard' : _DrawBoard
+            initVPages : _initVPages
         }
 });

@@ -8,7 +8,6 @@ HttpHandler.prototype.title = 'create voice site';
 
 HttpHandler.prototype.onHandle = function(req, res, callbackFun){
 	var accountId =  req.session.user.uuid;
-
 	VSiteDBCtrl.findVSitesByAccountId(accountId, function(err, doc){
 		callbackFun(doc[0]);
 	});

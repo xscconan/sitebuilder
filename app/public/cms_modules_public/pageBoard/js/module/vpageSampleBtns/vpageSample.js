@@ -1,7 +1,7 @@
-define(['jquery', 'meta/shareObj', 'util/util', 'mainBoard', 'controller/vpageAjaxController',
+define(['jquery', 'meta/shareObj', 'util/util', 'controller/vpageAjaxController',
  'SHARE_JS/libs/utils', 'UTILS/panels', 'UTILS/utils', 'controller/vpageController'
  ],
- function($, ShareObj, Utils, MainBoard, VPageAjaxCtrl, ShareUtils, Panels, SYUtils, VPageCtrl) {
+ function($, ShareObj, Utils, VPageAjaxCtrl, ShareUtils, Panels, SYUtils, VPageCtrl) {
 	var VpageSample = function(){};
 	
 	var _SampleDraggerStatus = {
@@ -39,8 +39,8 @@ define(['jquery', 'meta/shareObj', 'util/util', 'mainBoard', 'controller/vpageAj
 			if (THIS.SampleDragger.status == _SampleDraggerStatus.IN && ShareObj.dragingVpage != null)
 			{
 				var offset = $('#vpageShapeBox').offset();
-				ShareObj.dragingVpage.x = offset.left - MainBoard.DrawBoard.left - 5;
-				ShareObj.dragingVpage.y = offset.top - MainBoard.DrawBoard.top - 40;
+				ShareObj.dragingVpage.x = offset.left - ShareObj.drawBoard.left - 5;
+				ShareObj.dragingVpage.y = offset.top - ShareObj.drawBoard.top - 40;
 				this.createVpageByDrag(THIS);
 			}
 		},
