@@ -1,0 +1,26 @@
+!!! 5
+html(lang="en")
+	include ./header
+	body
+		#topBar
+			.leftBox
+			.rightBox
+		#leftBox
+			input(placeholder="Search Hub", x-webkit-speech="x-webkit-speech")
+			h3 Call Hub(s)
+			#callHubList
+				| No Call Hub
+			button(id="addCallHub", class="button blue normal", type="button") New Call Hub
+		#mainBox
+			.header.tabbar2
+				#navigation
+					li.selected All Agent(s)
+					li Avaliable Agent(s)
+					li(#selectdHub)
+				.rightOpBtns
+					input(placeholder="Search Agent", x-webkit-speech="x-webkit-speech")
+					button(id="popupAddAgent", class="button blue small rect", type="button") New Agent
+			#agentList
+		#footer
+
+	script(src='/ui/js/libs/require-2.1.4.min.js', data-main="/cms_modules_public/callQueue/js/agentsMain.js")

@@ -1,10 +1,32 @@
-define(['meta/shareObj', 'vpages/connectLine', 'UTILS/panels', 'controller/vpageAjaxController', 'vpageContentTmp/vpage'],
- function(ShareObj, ConnectLine, Panels, VPageAjaxCtrl, vpageEditTmp){
+define(['meta/shareObj', 'vpages/connectLine', 'UTILS/panels', 'controller/vpageAjaxController', 
+	'vpageContentTmp/vpage', 'controller/vpageController', 'util/util'],
+ function(ShareObj, ConnectLine, Panels, VPageAjaxCtrl, vpageEditTmp, VPageCtrl, UTILS){
 
 	var VPageEvent = {
 		'isForMouseLine' : function(ThisDragType, isArrow){
 			if (ThisDragType == "image" || !!isArrow)
 				return true;
+			return false;
+		},
+		'isDragOverGroup' : function(x, y){
+			if (!!ShareObj.dragOverGroupRo)
+			{	
+				x -= ShareObj.drawBoard.left;
+				y -= ShareObj.drawBoard.top;
+
+				var width = ShareObj.VPAGE.W;
+				var height = ShareObj.VPAGE.H;
+				
+				var minX = ShareObj.dragOverGroupRo.attrs.x - width + 30;
+				var maxX = ShareObj.dragOverGroupRo.attrs.x + width;
+
+				var minY = ShareObj.dragOverGroupRo.attrs.y + height - 30;
+				var maxY = ShareObj.dragOverGroupRo.attrs.y + ShareObj.dragOverGroupRo.attrs.height + height;
+
+				if ( x > minX && x < maxX && y > minY && y < maxY)
+					return true
+			}
+
 			return false;
 		},
 		'startDrag' : function(x, y, ThisVpage, ThisDrag, isArrow){
@@ -13,7 +35,7 @@ define(['meta/shareObj', 'vpages/connectLine', 'UTILS/panels', 'controller/vpage
 				ThisVpage.group[2].hide();
 				var mouseLineRo = ThisVpage.drawBoard.getById(ShareObj.mouseLine.roId);
 				mouseLineRo.show();
-				ShareObj.mouseLine.startNodeRo = ThisVpage;
+				ShareObj.mouseLine.startNode = ThisVpage;
 			}
 		},
 		'move' : function(x, y, mx, my, ThisVpage, ThisDrag, isArrow){
@@ -24,6 +46,14 @@ define(['meta/shareObj', 'vpages/connectLine', 'UTILS/panels', 'controller/vpage
 			}
 			else
 			{
+				//check group touched status
+				if (!this.isDragOverGroup(mx, my))
+				{
+					if (!!ShareObj.dragOverGroupRo)
+						ShareObj.dragOverGroupRo.attr({"opacity": 0.8});
+					ShareObj.dragOverGroupRo = null;
+				}
+
 				//body move
 				var att = {x: mx - ShareObj.drawBoard.left - 20, y: my - ShareObj.drawBoard.top -50};
 				var count = ThisVpage.group.length;
@@ -31,18 +61,39 @@ define(['meta/shareObj', 'vpages/connectLine', 'UTILS/panels', 'controller/vpage
 	            for (var i = 0; i < count; i++)
 	            {
 	            	var dragItem = ThisVpage.group[i];
-	            	dragItem.attr(att);
+	            	if (dragItem.type != "set")
+	            		dragItem.attr(att);
 
 	            	if (!!dragItem.resetPostion)
-	            		dragItem.resetPostion(ThisVpage);
+	            		dragItem.resetPostion(ThisVpage, att);
 	            }
 
-	            for (var lineUUID in  ThisVpage.connectLines) {
-                	ThisVpage.connectLines[lineUUID].reSetLine();
-           		}
+	            this._resetLinesForNode(ThisVpage);
 
             	ThisVpage.drawBoard.safari();
 			}
+		},
+		_resetLinesForNode : function(startNode){
+			var referEndNodes = startNode.referEndNode;
+			
+            for (i in  referEndNodes) {
+            	var startNodeTmp = UTILS.getNodeInBoard(startNode.uuid);
+            	var endNode = UTILS.getNodeInBoard(referEndNodes[i]);
+            	
+             	if (!!endNode && !! startNodeTmp && startNodeTmp.uuid != endNode.uuid)
+            	{
+            		var lineUUID = startNodeTmp.uuid + endNode.uuid;
+            		ShareObj.lineList[lineUUID].reSetLine();
+            	}
+            	
+       		}
+
+       		var inboundLinesId = startNode.inboundLinesId
+       		for (i in inboundLinesId)
+       		{
+       			var lineUUID = inboundLinesId[i];
+       			ShareObj.lineList[lineUUID].reSetLine();
+       		}
 		},
 		'stopDragAndDrawLine' : function(ThisVpage, ThisDrag, isArrow){
 			if (this.isForMouseLine(ThisDrag.type, isArrow))
@@ -51,34 +102,53 @@ define(['meta/shareObj', 'vpages/connectLine', 'UTILS/panels', 'controller/vpage
 				var mouseLineRo = ThisVpage.drawBoard.getById(ShareObj.mouseLine.roId);
 				mouseLineRo.hide().attr({path: 'M0,0L0,0'});
 		
-				return this.drawConnectLine();
+				return this._updateConnectLine();
 			}
 			else
 			{
-				var gapW = ThisDrag.attrs.x - ThisVpage.x;
-				var gapH = ThisDrag.attrs.y - ThisVpage.y;
-				if (ThisDrag.type == "text")
+				if (!!ShareObj.dragOverGroupRo)
 				{
-					gapW -= ThisVpage.textOffset.x;
-					gapH -= ThisVpage.textOffset.y;
+					this.pushVpageIntoGroup(ThisVpage);
 				}
+				else
+				{
+					var gapW = ThisDrag.attrs.x - ThisVpage.x;
+					var gapH = ThisDrag.attrs.y - ThisVpage.y;
 
-				if (Math.abs(gapW)> 2 || Math.abs(gapH)> 2 )
-				{	
-					ThisVpage.x = ThisDrag.attrs.x;
-					ThisVpage.y = ThisDrag.attrs.y;
-					VPageAjaxCtrl.updateVpages(ThisVpage);
+					if (Math.abs(gapW)> 2 || Math.abs(gapH)> 2 )
+					{	
+						ThisVpage.x = ThisDrag.attrs.x;
+						ThisVpage.y = ThisDrag.attrs.y;
+						VPageAjaxCtrl.updateVpages(ThisVpage);
+					}
 				}
 			}
 		},
-		drawConnectLine : function(){
-			require(['controller/vpageController'], function(VPageCtrl){
-				var _startNodeRo = ShareObj.mouseLine.startNodeRo;
-				var _endNodeRo = ShareObj.mouseLine.endNodeRo;
-				var _isDrawLine = VPageCtrl.drawConnectLine(_startNodeRo, _endNodeRo, true);
+		pushVpageIntoGroup : function(ThisVpage){
+			var vgroupId = ShareObj.dragOverGroupRo.vgroupId;
+			var VGroup = ShareObj.vgroupList[vgroupId];
 
-				ShareObj.mouseLine.startNodeRo = null;
-				ShareObj.mouseLine.endNodeRo = null;
+			VGroup.setFilterVpageBtn(ThisVpage, true);
+			ThisVpage.vgroupId = VGroup.uuid;
+			VPageAjaxCtrl.updateVpages(ThisVpage);
+			VPageCtrl.switchVGroupLine(ThisVpage);
+			ThisVpage.removeInstance();
+		},
+		_updateConnectLine : function(){
+			require(['controller/vpageController'], function(VPageCtrl){
+				var _startNode = ShareObj.mouseLine.startNode;
+				var _endNode = ShareObj.mouseLine.endNode;
+
+				if (!!_startNode && !!_endNode){
+					ShareObj.vpageList[_startNode.uuid].referEndNode.push(_endNode.uuid);
+				}
+					
+				
+				VPageCtrl.drawConnectLine(_startNode, _endNode);
+				VPageAjaxCtrl.updateVpages(_startNode);
+
+				ShareObj.mouseLine.startNode = null;
+				ShareObj.mouseLine.endNode = null;
 			});
 		},
 		'mouseLineWithMove' : function(x, y, mx, my, ThisVpage, ThisDrag){
@@ -91,13 +161,13 @@ define(['meta/shareObj', 'vpages/connectLine', 'UTILS/panels', 'controller/vpage
 			mouseLineRo.attr({path: _path});
 		},
 		'mouseHoverIn' : function(thisVpage){
-			var startNodeVPage = ShareObj.mouseLine.startNodeRo;
+			var startNodeVPage = ShareObj.mouseLine.startNode;
 
 			if (!startNodeVPage)
 				thisVpage.group[2].show();
-			else if (ShareObj.mouseLine.startNodeRo.uuid != thisVpage.uuid){
+			else if (ShareObj.mouseLine.startNode.uuid != thisVpage.uuid){
 				// line hover the other vpage node
-				ShareObj.mouseLine.endNodeRo = thisVpage;
+				ShareObj.mouseLine.endNode = thisVpage;
 			}
 		},
 		'mouseHoverOut' : function(thisVpage){
@@ -107,12 +177,20 @@ define(['meta/shareObj', 'vpages/connectLine', 'UTILS/panels', 'controller/vpage
 			var vpageRectAttrs = thisVpage.group[0].attrs;
 			var width = 300;
 			var height = 200;
-			var x = vpageRectAttrs.x + vpageRectAttrs.width + ShareObj.drawBoard.left + 20;			var y = vpageRectAttrs.y + vpageRectAttrs.height / 2 + ShareObj.drawBoard.top - height/2;
+			var x = vpageRectAttrs.x + vpageRectAttrs.width + ShareObj.drawBoard.left + 20;
+			var y = vpageRectAttrs.y + vpageRectAttrs.height / 2 + ShareObj.drawBoard.top - height/2;
 
 			var arrowPanelId = Panels.Arrow.ajaxPopup(thisVpage.uuid, 'left', x, y, width, height);
 			var vpageEditTmpObj = vpageEditTmp.getTmp(thisVpage);
 			$("#" + arrowPanelId).find('.container').html(vpageEditTmpObj.content);
 			Panels.PopupPanel.btnsEventListen(vpageEditTmpObj.buttonsObj, arrowPanelId);
+		},
+		dragOverGroup : function(vgroupRo){
+			if (!!vgroupRo.isGroupBox && !ShareObj.dragOverGroup)
+			{
+				ShareObj.dragOverGroupRo = vgroupRo;
+				ShareObj.dragOverGroupRo.attr({"opacity": 1});
+			}
 		}
 	};
 

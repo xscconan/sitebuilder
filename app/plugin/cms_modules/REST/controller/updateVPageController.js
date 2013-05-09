@@ -4,7 +4,7 @@ var ShareUtils = require('../../../../public/sharedJs/libs/utils.js').Utils;
 
 var db = require("../../../../storge/db/db.js");
 
-var dbHandlers = require("../../../../storge/model/MongoHander.js");
+var dbHandlers = require("../../../../storge/model/MongoHandler.js");
 
 exports.HttpHandler = HttpHandler = function(){};
 HttpHandler.prototype = new Handler.HttpHandler();
@@ -25,7 +25,8 @@ HttpHandler.prototype.onHandle = function(req, res, callbackFun){
 		y : req.body.y,
 		typeId : req.body.typeId,
 		comments : req.body.comments,
-		referEndNode : req.body.referEndNode || []
+		referEndNode : req.body.referEndNode || [],
+		vgroupId : req.body.vgroupId
 	}
 
 	var VPageListModel = VSiteDBCtrl.getVPageListModel();
@@ -51,6 +52,4 @@ HttpHandler.prototype.onHandle = function(req, res, callbackFun){
 	);
 
 	db.update(VPageListModel, updateHandlerInfo);
-
-
 };

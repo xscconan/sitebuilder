@@ -1,5 +1,5 @@
-define(['vpageSampleBtns/vpageSample', 'meta/meta', 'vpages/message'], function(VpageSample, Meta, VPageClass){
-	var MessagePageSample = function(_listBoard, _drawBoard, _typeId){
+define(['vpageSampleBtns/vpageInterface', 'meta/meta', 'vpages/message'], function(VpageInterface, Meta, VPageClass){
+	var MessagePage = function(_listBoard, _drawBoard, _typeId){
 		this.listBoard = _listBoard;
 		this.drawBoard = _drawBoard;
 		this.VPageClass = VPageClass;
@@ -13,21 +13,15 @@ define(['vpageSampleBtns/vpageSample', 'meta/meta', 'vpages/message'], function(
 		this.sample = {
 			x : 10,
 			y : 10,
-			w : 200,
-			h : 40,
 			r : 10,
 			fontSize : 14,
 			defaultText : "Message Page"
 		};
 	}
 
-	MessagePageSample.prototype = new VpageSample;
-
 	return {
 		createSampleBtn : function(listBoard, drawBoard, i, typeId){
-			var page = new MessagePageSample(listBoard, drawBoard, typeId);
-			page.sample.y += i * page.sample.h * 1.2;
-			page.sampleCreate();
+			VpageInterface.createSampleBtn(MessagePage, listBoard, drawBoard, i, typeId);
 		}
 	}
 });

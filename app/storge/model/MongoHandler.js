@@ -1,3 +1,5 @@
+var mongoose = require('mongoose');
+
 exports.FindHandlerInfo = function(updateMethod, conditions, fields, callbackFun){
 	this.updateMethod = updateMethod || "find";
 	this.conditions = conditions || {};
@@ -18,4 +20,19 @@ exports.UpdateHandlerInfo = function(updateMethod, conditions, updates, callback
 exports.DelHandlerInfo = function(conditions, callbackFun){
 	this.conditions = conditions || {};
 	this.callbackFun =  callbackFun || function(err){};
+};
+
+
+exports.getModel = function(modelName, schemaObj){
+	var Model = null;
+	try {
+	    Model = global.db.model(modelName);
+	} catch (e) {
+
+		var Schema = new mongoose.Schema(schemaObj);
+
+    	Model = global.db.model(modelName, Schema);
+	}
+
+	return Model;
 };

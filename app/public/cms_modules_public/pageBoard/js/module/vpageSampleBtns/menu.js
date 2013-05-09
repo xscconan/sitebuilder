@@ -1,5 +1,5 @@
-define(['vpageSampleBtns/vpageSample', 'meta/meta', 'vpages/menu'], function(VpageSample, Meta, VPageClass){
-	var MenuPageSample = function(_listBoard, _drawBoard, _typeId){
+define(['vpageSampleBtns/vpageInterface', 'meta/meta', 'vpages/menu'], function(VpageInterface, Meta, VPageClass){
+	var MenuPage = function(_listBoard, _drawBoard, _typeId){
 		this.listBoard = _listBoard;
 		this.drawBoard = _drawBoard;
 		this.VPageClass = VPageClass;
@@ -13,21 +13,18 @@ define(['vpageSampleBtns/vpageSample', 'meta/meta', 'vpages/menu'], function(Vpa
 		this.sample = {
 			x : 10,
 			y : 10,
-			w : 200,
-			h : 40,
 			r : 30,
 			fontSize : 14,
 			defaultText : "Menu Page"
 		};
 	}
 
-	MenuPageSample.prototype = new VpageSample;
-
 	return {
 		createSampleBtn : function(listBoard, drawBoard, i, typeId){
-			var page = new MenuPageSample(listBoard, drawBoard, typeId);
-			page.sample.y += i * page.sample.h * 1.2;
-			page.sampleCreate();
-		}
+			VpageInterface.createSampleBtn(MenuPage, listBoard, drawBoard, i, typeId);
+		},
+		// creatVPageFilterBtnInGroup : function(){
+		// 	VpageInterface.creatVPageFilterBtnInGroup(MessagePage, drawBoard, typeId);
+		// }
 	}
 });

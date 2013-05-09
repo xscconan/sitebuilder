@@ -2,7 +2,10 @@ define(['jquery', 'util/util', 'meta/shareObj', 'vpages/vpageEvent'],
 	function($, Utils, ShareObj, VPageEvent) {
 
 	var VPage = function(){
+		this.isVPage = true;
 		this.group = null;
+		this.width = ShareObj.VPAGE.W;
+		this.height = ShareObj.VPAGE.H;
 		this.textOffset = {
 			x: 20,
 			y: 20
@@ -20,6 +23,8 @@ define(['jquery', 'util/util', 'meta/shareObj', 'vpages/vpageEvent'],
 		var vpItemX = parseInt(_x) || this.info.x;
 		var vpItemY = parseInt(_y) || this.info.y;
 
+		this.color = ShareObj.VPAGE.COLOR[this.vpage];
+
 		if (!!ShareObj.dragingVpage)
 		{
 			vpItemX = parseInt(ShareObj.dragingVpage.x) || 0;
@@ -30,7 +35,7 @@ define(['jquery', 'util/util', 'meta/shareObj', 'vpages/vpageEvent'],
 		this.y = vpItemY;
 
 		this.group.push(
-		    this.drawBoard[this.shape](vpItemX, vpItemY, this.info.w, this.info.h, this.info.r).attr({
+		    this.drawBoard[this.shape](vpItemX, vpItemY, this.width, this.height, this.info.r).attr({
 	    		stroke: this.color,
 				"fill-opacity": 100,
 				"stroke-width": 2,
@@ -42,7 +47,7 @@ define(['jquery', 'util/util', 'meta/shareObj', 'vpages/vpageEvent'],
 				"font-weight" : 'normal',
 				"text-anchor" : 'start',
 				"fill": "#fff",
-				"cursor" : "move"
+				"cursor" : "default"
 		    }),
 		     this.drawBoard.image("./cms_modules_public/pageBoard/img/connector.png", vpItemX + this.connectorIcon.offsetX, vpItemY + this.connectorIcon.offsetY, 15, 15)
 		     .hide()
@@ -70,15 +75,24 @@ define(['jquery', 'util/util', 'meta/shareObj', 'vpages/vpageEvent'],
 
 		//VPage drag event
 		this.group.drag(function(x, y, mx, my){
-			VPageEvent.move(x, y, mx, my, thisVpage, this);
+			if (this.type != "text")
+			{
+				thisVpage.group.toFront();
+				VPageEvent.move(x, y, mx, my, thisVpage, this);
+			}
 		}, 
 		function(x, y){
 			//Just for connect icon drag in vpage group
-			VPageEvent.startDrag(x, y, thisVpage, this);
+			if (this.type != "text")
+				VPageEvent.startDrag(x, y, thisVpage, this);
 		},
 		function(){
-			//Just for connect icon drag in vpage group
-			VPageEvent.stopDragAndDrawLine(thisVpage, this);
+			if (this.type != "text")
+				VPageEvent.stopDragAndDrawLine(thisVpage, this);
+		});
+
+		this.group[0].onDragOver(function(vgroupRo){
+			VPageEvent.dragOverGroup(vgroupRo);
 		});
 
 		//Mouse hover vpage, show connect icon
@@ -95,14 +109,17 @@ define(['jquery', 'util/util', 'meta/shareObj', 'vpages/vpageEvent'],
 	};
 
 	VPage.prototype.removeInstance = function(){
-		this.group.remove();
+		this.group.animate({width: 20, height: 20}, 50, function(){
+            this.animate({opacity: 0}, 100, function(){
+              this.remove();
+            });
+        });
 	};
 
 	VPage.prototype.resetUI = function(){
 		this.group.attr( { "title" : this.comments} );
 		this.group[1].attr('text', this.title);
 	};
-
 
 	return VPage;
 });

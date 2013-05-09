@@ -1,5 +1,7 @@
-define(['jquery', 'UTILS/panels', 'vpageContentTmp/siteCreatePanel',  'util/util'], 
-  function($, Panel, SiteCreatePanelTmp, Utils) {
+define(['jquery', 'UTILS/panels', 'vpageContentTmp/siteCreatePanel',
+  'util/util', 'meta/shareObj', 'vpages/group', 'controller/vsiteAjaxController'
+], 
+  function($, Panel, SiteCreatePanelTmp, Utils, ShareObj, VGroup, VSiteAjaxCtrl) {
     
     var _DO_CREATER_NEW_SITE = "createNewSite";
 
@@ -12,7 +14,7 @@ define(['jquery', 'UTILS/panels', 'vpageContentTmp/siteCreatePanel',  'util/util
     };
 
     var _GroupCreator = {
-      init : function(){
+      init : function(drawBoard){
          var vpageShapeBoxJo = $('#vpageShapeBox');
          var createGroupJo =  $("#createGroup");
          createGroupJo.mousedown(function(event){
@@ -33,20 +35,41 @@ define(['jquery', 'UTILS/panels', 'vpageContentTmp/siteCreatePanel',  'util/util
               var _isMoveInDropPlace = Utils.isMoveInDrawBoard(event.pageX, event.pageY -20 );
               
                if (_isMoveInDropPlace)
-                  _GroupCreator.preCreateNewGroup();
+                  _GroupCreator.preCreateNewGroup(event, drawBoard);
                createGroupJo.data('moveType', '');
          });
       },
-      preCreateNewGroup : function(){
+      preCreateNewGroup : function(event, drawBoard){
           var moveType = $("#createGroup").data('moveType');
           if (moveType == "group")
           {
-            alert(123);
+              
+              var _x = event.pageX - ShareObj.drawBoard.left;
+              var _y = event.pageY - ShareObj.drawBoard.top - 35;
+
+
+              var _vgroup = {
+                  title : '',
+                  x :  _x,
+                  y : _y
+              };
+                
+              VSiteAjaxCtrl.saveVGroup( _vgroup, function(data){
+                if (data.created == "1" && !!data.vgroupId)
+                {
+                  var vgroup = new VGroup(drawBoard, data);
+                  vgroup.createGroup(_x, _y);
+                }
+                else
+                  alert('create fail!');
+
+              });
+             
           }
       }
     }
 
-    this._init = function(){
+    this._init = function(drawBoard){
        $("#operator").mouseover(function(){
        		$(this).addClass('panelBg1');
        }).mouseout(function(){
@@ -61,7 +84,7 @@ define(['jquery', 'UTILS/panels', 'vpageContentTmp/siteCreatePanel',  'util/util
        			_doCreateNewSite();
        });
 
-       _GroupCreator.init();
+       _GroupCreator.init(drawBoard);
 
     };
 

@@ -58,7 +58,7 @@ define(['jquery', 'SYLIB/mustache', 'SHARE_JS/libs/utils'], function($, Mustache
 				var content = _content || Panels.ajaxLoadingIcon;
 				var closeBtn = (!_noCloseBtn)?Panels.closeBtn:"";
 
-				var panelsTmp = '<div id="{{id}}" class="popupBox box-shadow"><div class="body"><div class="title">{{title}}'+closeBtn+'</div><div class="container">##content##</div></div></div>';
+				var panelsTmp = '<div id="{{id}}" class="popupBox box-shadow"><div class="body"><div class="title"><span class="titleName">{{title}}</span>'+closeBtn+'</div><div class="container">##content##</div></div></div>';
 				var contents = Mustache.render(panelsTmp, {id : _id, title: title});
 				contents = contents.replace('##content##', content);
 				$('body').prepend(contents);

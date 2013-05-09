@@ -1,5 +1,5 @@
 var db = require("../../../storge/db/db.js");
-var Handlers = require("../../../storge/model/MongoHander.js");
+var Handlers = require("../../../storge/model/MongoHandler.js");
 var mongoose = require('mongoose');
 var ShareUtils = require('../../../public/sharedJs/libs/utils.js').Utils;
 var _VSiteSchema = require('../../../plugin/cms_modules/pageBoard/dbSchema/VSiteSchema.js').VSiteSchema;

@@ -14,6 +14,17 @@ define([ 'meta/shareObj'], function(ShareObj){
 				)
 				return true;
 			return false;
+		},
+		getNodeInBoard : function(nodeId){
+			var vpageNode = ShareObj.vpageList[nodeId];
+			if (!!vpageNode && !!vpageNode.vgroupId)
+				return ShareObj.vgroupList[vpageNode.vgroupId];
+
+			var vgroupNode = ShareObj.vgroupList[nodeId];
+			if (!!vgroupNode)
+				return vgroupNode;
+
+			return vpageNode;
 		}
 	};
 

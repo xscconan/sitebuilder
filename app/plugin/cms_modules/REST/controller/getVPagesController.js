@@ -14,10 +14,16 @@ HttpHandler.prototype.onHandle = function(req, res, callbackFun){
 		"vsiteId" : siteId
 	};
 
-	VSiteDBCtrl.findVPageList(conditions, null, function(err, doc){
+	VSiteDBCtrl.findVGroupList(conditions, null, function(err, doc){
 		var returnData = {};
-		returnData.vpageList = doc;
-		returnData.pageType = global.pageBoard.pageType;
-		callbackFun(returnData);
+		returnData.vgroupList = doc;
+
+		VSiteDBCtrl.findVPageList(conditions, null, function(err, doc){
+			returnData.vpageList = doc;
+			returnData.pageType = global.pageBoard.PAGE_TYPE_MENU;
+			callbackFun(returnData);
+		});
 	});
+
+
 };

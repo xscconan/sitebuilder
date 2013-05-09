@@ -69,7 +69,41 @@ var _Utils = {
 	        return r;   
 	     }   
 		  return o.toString();   
+	},
+	 ArrayUtil : {
+	 	inArray : function(value, array){
+	 		if (value != 'undefined' )
+	 			return false;
+
+	 		for (i in array)
+	 		{
+	 			if (array[i] == value)
+	 				return true;
+	 		}
+	 		return false;
+	 	},
+	 	mergeWithUniqueVal : function(array1, array2){
+	 		for (i in array2)
+	 		{
+	 			if (!_Utils.ArrayUtil.inArray(array2[i], array1))
+	 			{
+	 				array1.push(array2[i]);
+	 			}
+	 				
+	 		}
+	 		return array1;
+	 	},
+	 	removeValue : function(value, array){
+	 		var tmpArray = [];
+	 		for (i in  array)
+	 		{
+	 			if (value != array[i])
+	 				tmpArray.push(value);	
+	 		}
+	 		return tmpArray;
+	 	}
 	}
+
 };
 
 if (typeof exports != 'undefined')

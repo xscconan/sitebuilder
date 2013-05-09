@@ -2,7 +2,10 @@ define(['jquery', 'meta/shareObj', 'util/util', 'controller/vpageAjaxController'
  'SHARE_JS/libs/utils', 'UTILS/panels', 'UTILS/utils', 'controller/vpageController'
  ],
  function($, ShareObj, Utils, VPageAjaxCtrl, ShareUtils, Panels, SYUtils, VPageCtrl) {
-	var VpageSample = function(){};
+	var VpageSample = function(){
+		this.width = 200;
+		this.height = 40;
+	};
 	
 	var _SampleDraggerStatus = {
 		'OUT' : 'out',
@@ -20,7 +23,7 @@ define(['jquery', 'meta/shareObj', 'util/util', 'controller/vpageAjaxController'
 			$('#vpageShapeBox').fadeIn();
 		},
 		'move' : function(x, y, mx, my, THIS){
-			var _left = mx - THIS.sample.w + 20;
+			var _left = mx - THIS.width + 20;
 			var _top = my - 13;
 
 			var _isMoveInDropPlace = Utils.isMoveInDrawBoard(mx, my);
@@ -85,7 +88,7 @@ define(['jquery', 'meta/shareObj', 'util/util', 'controller/vpageAjaxController'
 		var THIS = this;
 
 		st.push(
-		    this.listBoard[this.shape](this.sample.x, this.sample.y, this.sample.w, this.sample.h, this.sample.r).attr({
+		    this.listBoard[this.shape](this.sample.x, this.sample.y, this.width, this.height, this.sample.r).attr({
 	    		stroke: this.color,
 				"fill-opacity": 100,
 				"stroke-width": 2,

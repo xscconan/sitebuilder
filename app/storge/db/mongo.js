@@ -18,9 +18,7 @@ exports.init = function(dbConf, callBackFunction)
 
 	var db = mongoose.connection;
 	db.on('error', callBackFunction);
-	db.once('open', function callback () {
-	  	console.log('db connect!');
-	});
+
 	callBackFunction(null, db);
 }
 

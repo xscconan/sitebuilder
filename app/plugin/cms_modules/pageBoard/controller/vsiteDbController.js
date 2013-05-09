@@ -1,41 +1,19 @@
 var Handler = require('../../../../meta/HttpHandler.js');
 var _SiteBuildSchema = require('../dbSchema/VSiteSchema.js').SiteBuild;
-var Handlers = require("../../../../storge/model/MongoHander.js");
+var dbHandlers = require("../../../../storge/model/MongoHandler.js");
 var db = require("../../../../storge/db/db.js");
-var mongoose = require('mongoose');
-
 
 exports.getVSiteModel = function(){
-	var VSiteModel;
-	try {
-	    // Throws an error if "VPage" hasn't been registered
-	    VSiteModel = global.db.model('VSite');
-	} catch (e) {
-
-		var VSiteSchema = new mongoose.Schema(_SiteBuildSchema.VSiteSchema);
-
-    	VSiteModel = global.db.model('VSite', VSiteSchema);
-	}
-
-	return VSiteModel;
+	return dbHandlers.getModel('VSite', _SiteBuildSchema.VSiteSchema);
 };
 
 exports.getVPageListModel = function(){
-	var VPageListModel;
-
-	try {
-	    // Throws an error if "VPage" hasn't been registered
-	    VPageListModel = global.db.model('VPageList');
-	} catch (e) {
-		var  VPageListSchema = new mongoose.Schema(_SiteBuildSchema.VPageListSchema);
-
-    	VPageListModel = global.db.model('VPageList', VPageListSchema);
-	}
-
-	return VPageListModel;
-
+	return dbHandlers.getModel('VPageList', _SiteBuildSchema.VPageListSchema);
 };
 
+exports.getVGroupListModel = function(){
+	return dbHandlers.getModel('VGroupList', _SiteBuildSchema.VGroupListSchema);
+};
 
 exports.findVSitesByAccountId = function(accountId, callbackFun){
 	var conditions = {"accountId" : accountId};
@@ -46,14 +24,13 @@ exports.findVSites = function(conditions, fields, callbackFun){
 
 	var VSiteModel = exports.getVSiteModel();
 
-	var findHandlerInfo = new Handlers.FindHandlerInfo(
+	var findHandlerInfo = new dbHandlers.FindHandlerInfo(
 		"find",
 		conditions,
 		fields,
 		function(err, doc){
 		callbackFun(err, doc);
 	});
-
 
 	db.read(VSiteModel, findHandlerInfo);
 };
@@ -62,7 +39,7 @@ exports.findVPageList = function(conditions, fields, callbackFun){
 
 	var VPageListModel = exports.getVPageListModel();
 
-	var findHandlerInfo = new Handlers.FindHandlerInfo(
+	var findHandlerInfo = new dbHandlers.FindHandlerInfo(
 		"find",
 		conditions,
 		fields,
@@ -72,4 +49,20 @@ exports.findVPageList = function(conditions, fields, callbackFun){
 
 
 	db.read(VPageListModel, findHandlerInfo);
+};
+
+exports.findVGroupList = function(conditions, fields, callbackFun){
+
+	var VGroupListModel = exports.getVGroupListModel();
+
+	var findHandlerInfo = new dbHandlers.FindHandlerInfo(
+		"find",
+		conditions,
+		fields,
+		function(err, doc){
+		callbackFun(err, doc);
+	});
+
+
+	db.read(VGroupListModel, findHandlerInfo);
 };

@@ -18,12 +18,12 @@ require(['jquery','leftBar', 'mainBoard', 'topBar', 'UTILS/panels', 'controller/
     var listBoard = Raphael("vpageLists", 320, 200);
     var drawBoard = Raphael("drawBoard", drawBoardJo.width(), drawBoardJo.height());
     mainBoard.init(drawBoard);
-    topBar.init();
+    topBar.init(drawBoard);
 
     VPageAjaxCtrl.getAllPages(function(data){
 
         leftBar.init(listBoard, drawBoard, data.pageType);
-        mainBoard.initVPages(data, drawBoard, function(){
+        mainBoard.initVSites(data, drawBoard, function(){
             Panel.MaskLayour.remove();
             Panel.PopupPanel.removePanelById("loadingData");
         });

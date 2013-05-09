@@ -1,0 +1,8 @@
+{
+	"/cq" : {
+		"name" : "cq",
+		"method" : "get",
+		"resType" : "jade",
+		"session" : true
+	}
+}

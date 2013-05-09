@@ -12,7 +12,7 @@ var _addGlobalDb = function(db){
 var _cleanDBtrush = function(err){
 	console.log("###### SB Server connected fail! ######");
 	console.log(err);
-	global.Log.write('error', "[DB Error] ###### SB Server connected fail! ###### \n %s",err);
+	// global.Log.write('error', "[DB Error] ###### SB Server connected fail! ###### \n %s",err);
 	global.db = null;
 }
 

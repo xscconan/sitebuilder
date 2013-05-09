@@ -1,7 +1,7 @@
 var Handler = require('../../../../meta/HttpHandler.js');
 var ShareUtils = require('../../../../public/sharedJs/libs/utils.js').Utils;
 var VSiteDBCtrl = require('../../pageBoard/controller/vsiteDbController.js');
-var dbHandlers = require("../../../../storge/model/MongoHander.js");
+var dbHandlers = require("../../../../storge/model/MongoHandler.js");
 
 var db = require("../../../../storge/db/db.js");
 

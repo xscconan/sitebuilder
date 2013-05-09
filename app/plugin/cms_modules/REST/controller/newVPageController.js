@@ -3,7 +3,7 @@ var ShareUtils = require('../../../../public/sharedJs/libs/utils.js').Utils;
 var VSiteDBCtrl = require('../../pageBoard/controller/vsiteDbController.js');
 var db = require("../../../../storge/db/db.js");
 
-var dbHandlers = require("../../../../storge/model/MongoHander.js");
+var dbHandlers = require("../../../../storge/model/MongoHandler.js");
 
 
 exports.HttpHandler = HttpHandler = function(){};
@@ -24,7 +24,7 @@ HttpHandler.prototype.onHandle = function(req, res, callbackFun){
 		referEndNode : Array
 	}
 
-	var VSiteModel = VSiteDBCtrl.getVPageListModel();
+	var VPageModel = VSiteDBCtrl.getVPageListModel();
 
 	var updateHandlerInfo = new dbHandlers.UpdateHandlerInfo(
 		"update",
@@ -45,5 +45,5 @@ HttpHandler.prototype.onHandle = function(req, res, callbackFun){
 		{upsert : true }
 	);
 
-	db.update(VSiteModel, updateHandlerInfo);
+	db.update(VPageModel, updateHandlerInfo);
 };

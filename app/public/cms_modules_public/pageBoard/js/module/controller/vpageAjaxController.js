@@ -16,7 +16,8 @@ define(['jquery', 'UTILS/utils'], function($, SYUtils){
 				title : VPage.title,
 				x : VPage.x,
 				y : VPage.y,
-				typeId : VPage.typeId
+				typeId : VPage.typeId,
+				vgroupId : VPage.vgroupId
 			};
 
 			$.post('/newVPage', _vpage, function(data){
@@ -30,24 +31,16 @@ define(['jquery', 'UTILS/utils'], function($, SYUtils){
 
 			var _siteId =  SYUtils.getUrlParam("siteId");
 
-			var _referEndNode = [];
-
-			for (lid in VPage.connectLines)
-			{
-				var Line = VPage.connectLines[lid];
-				if (Line.stopVPageId != VPage.uuid)
-					_referEndNode.push(Line.stopVPageId);
-			}
-
 			var _vpage = {
 				siteId : _siteId,
 				vpageId : VPage.uuid,
+				vgroupId : VPage.vgroupId,
 				title : VPage.title,
 				x : VPage.x,
 				y : VPage.y,
 				typeId : VPage.typeId,
 				comments : VPage.comments,
-				referEndNode : _referEndNode
+				referEndNode : VPage.referEndNode
 			};
 
 			$.post('/updateVPage', _vpage, function(data){

@@ -1,4 +1,4 @@
-define(['VPAGR/vpageEvent', 'meta/shareObj'],  function(VPageEvent, ShareObj){
+define(['VPAGR/vpageEvent', 'meta/shareObj', 'SHARE_JS/libs/utils'],  function(VPageEvent, ShareObj, ShareUtils){
 
 	var ConnectLine = function(){
 		this.line = null;
@@ -8,21 +8,28 @@ define(['VPAGR/vpageEvent', 'meta/shareObj'],  function(VPageEvent, ShareObj){
 
 		this.startVPageId = null;
 		this.stopVPageId = null;
+		this.endVPageId = null;
+		this.isVGroupLine = false;
 	};
 
-	ConnectLine.prototype.drawLine = function(startNodeRo, endNodeRo){
+	ConnectLine.prototype.drawLine = function(startNode, endNode, endVpageId){
 		//group 0 is rect
+		
+		this.isVGroupLine = (!!startNode.isVGroup || !!endNode.isVGroup)? true : false;
 
-		var _color = this.color;
-		var _drawBoard = startNodeRo.drawBoard;
-		var _startRectRo = startNodeRo.group[0];
-		var _endRectRo = endNodeRo.group[0];
-		var _path = this.getLinePath(startNodeRo.group[0], endNodeRo.group[0]);
+		this.uuid = startNode.uuid + endNode.uuid;
+
+		this.color = this.isVGroupLine ? "#1C47BC": "#16995C";
+		var _drawBoard = startNode.drawBoard;
+		var _startRectRo = startNode.group[0];
+		var _endRectRo = endNode.group[0];
+		var _path = this.getLinePath(startNode.group[0], endNode.group[0]);
 		var _pathLine = _path.join(",");
 		var _bg = "";
+		this.endVPageId = endVpageId;
 
-		this.startVPageId = startNodeRo.uuid;
-		this.stopVPageId = endNodeRo.uuid;
+		this.startVPageId = startNode.uuid;
+		this.stopVPageId = endNode.uuid;
 
         this.line = {
             bg: _bg && _bg.split && _drawBoard.path(_pathLine).attr({stroke: _bg.split("|")[0], fill: "none", "stroke-width": _bg.split("|")[1] || 3}),
@@ -32,22 +39,27 @@ define(['VPAGR/vpageEvent', 'meta/shareObj'],  function(VPageEvent, ShareObj){
         };
 
         this.line.line.push(
-        	_drawBoard.path(_pathLine).attr({stroke: _color, fill: "none"})
+        	_drawBoard.path(_pathLine).attr({stroke: this.color, fill: "none"})
         	
         );
 
-        var triPoints = this.getTriPointsByLineRo(this.line.line[0], _path);
-		var _pathTri = this.getTrianglePath(triPoints.fx, triPoints.fy , triPoints.tx, triPoints.ty);
+        if (!this.isVGroupLine)
+        	this._initTriangleInLine(startNode, endNode, _path, _drawBoard);	      
+	};
 
-         this.line.line.push(
-          	_drawBoard.path(_pathTri).attr({stroke: _color, fill: _color, "cursor" : "move"})
-        );
-
+	ConnectLine.prototype._initTriangleInLine = function(startNode, endNode, linePath, _drawBoard){
         ThisLine = this;
 
+        var triPoints = this.getTriPointsByLineRo(this.line.line[0], linePath);
+		var _pathTri = this.getTrianglePath(triPoints.fx, triPoints.fy , triPoints.tx, triPoints.ty);
+
+	    this.line.line.push(
+	        _drawBoard.path(_pathTri).attr({stroke: this.color, fill: this.color, "cursor" : "move"})
+	    );
+
         this.line.line[1].idGroup = [this.line.line[0].id, this.line.line[1].id];
-        this.line.line[1].startVPageId = startNodeRo.uuid;
-        this.line.line[1].stopVPageId = endNodeRo.uuid;
+        this.line.line[1].startVPageId = startNode.uuid;
+        this.line.line[1].stopVPageId = endNode.uuid;
 
         this.line.line[1].hover(function(){
         	var lineRo = _drawBoard.getById(this.idGroup[0]);
@@ -63,43 +75,49 @@ define(['VPAGR/vpageEvent', 'meta/shareObj'],  function(VPageEvent, ShareObj){
         	arrowRo.attr({fill: ThisLine.color});
         });
 
-        this.line.line.drag(function(x, y, mx, my){
+	    this.line.line.drag(function(x, y, mx, my){
         	var lineRo = _drawBoard.getById(this.idGroup[0]);
         	var arrowRo = _drawBoard.getById(this.idGroup[1]);
 
         	lineRo.hide();
         	arrowRo.hide();
-			VPageEvent.move(x, y, mx, my, startNodeRo, this, true);
+			VPageEvent.move(x, y, mx, my, startNode, this, true);
 		}, 
 		function(x, y){
-			VPageEvent.startDrag(x, y, startNodeRo, this, true);
+			VPageEvent.startDrag(x, y, startNode, this, true);
 		},
 		function(){
 			var lineRo = _drawBoard.getById(this.idGroup[0]);
         	var arrowRo = _drawBoard.getById(this.idGroup[1]);
-        	var startNodeRo = ShareObj.vpageList[this.startVPageId];
+        	var startNode = ShareObj.vpageList[this.startVPageId];
 
-			ThisLine.rmOldLineNodeInVPages(this.startVPageId, this.stopVPageId);
+			ThisLine._rmOldLineNodeInVPages();
 			lineRo.remove();
 			arrowRo.remove();
-
-			VPageEvent.stopDragAndDrawLine(startNodeRo, this, true);
+			VPageEvent.stopDragAndDrawLine(startNode, this, true);
 		});
-
-
-        this.uuid = startNodeRo.uuid + endNodeRo.uuid;
 	};
 
-	ConnectLine.prototype.rmOldLineNodeInVPages = function(startVPageId, stopVPageId){
-		var oldLineUUID = startVPageId + stopVPageId;
-		var StartVPage = ShareObj.vpageList[startVPageId];
-		var EndVPage = ShareObj.vpageList[stopVPageId];
+	ConnectLine.prototype._rmOldLineNodeInVPages = function(){
+		var oldLineUUID = this.startVPageId + this.stopVPageId;
+		var StartVPage = ShareObj.vpageList[this.startVPageId];
+		var EndVPage = ShareObj.vpageList[this.stopVPageId];
 
-		delete(StartVPage.connectLines[oldLineUUID]);
-		delete(EndVPage.connectLines[oldLineUUID]);
+		delete(ShareObj.lineList[oldLineUUID]);
 
-		ShareObj.mouseLine.startNodeRo = StartVPage;
+		StartVPage.referEndNode = ShareUtils.ArrayUtil.removeValue(this.stopVPageId, StartVPage.referEndNode);
+		EndVPage.inboundLinesId = ShareUtils.ArrayUtil.removeValue(oldLineUUID, EndVPage.inboundLinesId);
+		ShareObj.mouseLine.startNode = StartVPage;
 	};
+
+	ConnectLine.prototype.removeInstance = function(){
+		// this._rmOldLineNodeInVPages();
+		if (!this.line)
+			return;
+
+		this.line.line.remove();
+		delete(this.line);
+	}
 
 	 ConnectLine.prototype.getTrianglePath = function(fx,fy,tx,ty){
 		var path = new Array();
@@ -188,22 +206,27 @@ define(['VPAGR/vpageEvent', 'meta/shareObj'],  function(VPageEvent, ShareObj){
 			tx : linePath[_lineLen-2],
 			ty : linePath[_lineLen-1]
 	    }
-
 	};
 
 
 	ConnectLine.prototype.reSetLine = function(){
-		var _path = this.getLinePath(this.line.from, this.line.to);
+		if (!this.line)
+			return;
 
+		var _path = this.getLinePath(this.line.from, this.line.to);
 		var _pathLine = _path.join(",");
 
 		this.line.bg && this.line.bg.attr({path: _pathLine});
 	    this.line.line[0].attr({path: _pathLine});
 
-		var triPoints = this.getTriPointsByLineRo(this.line.line[0], _path);
-		var _pathTri = this.getTrianglePath(triPoints.fx, triPoints.fy , triPoints.tx, triPoints.ty);
+	    if (!this.isVGroupLine)
+	    {
+	    	var triPoints = this.getTriPointsByLineRo(this.line.line[0], _path);
+			var _pathTri = this.getTrianglePath(triPoints.fx, triPoints.fy , triPoints.tx, triPoints.ty);
 
-	    this.line.line[1].attr({path: _pathTri});
+	    	this.line.line[1].attr({path: _pathTri});
+	    }
+		
 	};
 
 	return ConnectLine;

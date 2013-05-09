@@ -28,5 +28,35 @@
 		"method" : "post",
 		"resContentType" : "application/json",
 		"session" : true
+	},
+	"/newVGroup" : {
+		"name" : "newVGroup",
+		"method" : "post",
+		"resContentType" : "application/json",
+		"session" : true
+	},
+	"/updateVGroup" : {
+		"name" : "updateVGroup",
+		"method" : "post",
+		"resContentType" : "application/json",
+		"session" : true
+	},
+	"/getAgReferData" : {
+		"name" : "getAgReferData",
+		"method" : "post",
+		"resContentType" : "application/json",
+		"session" : true
+	},
+	"/wCallHub" : {
+		"name" : "wCallHub",
+		"method" : "post",
+		"resContentType" : "application/json",
+		"session" : true
+	},
+	"/wAgent" : {
+		"name" : "wAgent",
+		"method" : "post",
+		"resContentType" : "application/json",
+		"session" : true
 	}
 }
