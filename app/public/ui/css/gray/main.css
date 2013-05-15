@@ -98,7 +98,7 @@ body {
 
 .closeBtn {
 	background: url("/ui/img/icons/grayIcons.png") no-repeat scroll -31px -193px transparent;
-	margin: 0 10px;
+	margin: 3px 10px;
 	position: absolute;
 	right: 0;
 }
@@ -328,4 +328,25 @@ body {
 	background: #FCFD91;
     background: -webkit-gradient(linear, left top, left bottom, from(#FCFCA4), to(#FCE771));
     background: -moz-linear-gradient(top, #FCFCA4, #FCE771);
+}
+
+.multipleSelector {
+    border: #A6A6A6 solid 1px;
+    width: 160px;
+    padding: 5px;
+}
+
+.multipleSelector li{
+    height: 20px;
+    line-height: 20px;
+    padding-left: 2px;
+}
+
+.multipleSelector li:hover, .multipleSelector li.selected:hover{
+    background: #BFBFBF;
+}
+
+.multipleSelector li.selected{
+    background: #A2CDDB;
+    overflow: auto;
 }

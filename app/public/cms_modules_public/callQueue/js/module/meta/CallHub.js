@@ -2,12 +2,12 @@ define(['jquery', 'SYLIB/mustache'], function($, Mustache){
 	var CallHub = function(CallHub){
 		this.uuid = CallHub.hubId;
 		this.name = CallHub.name;
-		this.count = CallHub.agents.length;
+		// this.count = CallHub.agents.length;
 		this.color =  CallHub.color;
 	}
 
 	CallHub.prototype.getHtml = function(){
-		var tmp = '<li class="callHub" id="{{uuid}}" ><span class="name">{{name}}</span> <span class="count">({{count}})</span></li>'
+		var tmp = '<li class="callHub" id="{{uuid}}" ><span class="name">{{name}}</span></li>'
 
 		 return Mustache.render(tmp, this);
 	}

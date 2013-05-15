@@ -155,5 +155,18 @@ define(['jquery', 'SYLIB/mustache', 'SHARE_JS/libs/utils'], function($, Mustache
 		}
 	};
 
+
+	Panels.MultipleSelector = {
+		/*
+		*	SelectorObj
+		*		- class: String, custom class
+		*		- id: dom id
+		*/
+		getHtml : function(SelectorObj, content){
+			var tmp = '<div class="multipleSelector {{class}}" id="{{id}}">**content**</div>';
+			return Mustache.render(tmp, SelectorObj).replace("**content**", content);
+		}
+	}
+
 	return Panels;
 });

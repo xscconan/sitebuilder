@@ -17,7 +17,8 @@ CQ.Agent = {
 	password : String,
 	skill : String,
 	isSupervisor : Boolean,
-	hubs : Array
+	hubs : Array,
+	updateKey : String
 };
 
 exports.CQ = CQ;

@@ -13,7 +13,7 @@ HttpHandler.prototype.onHandle = function(req, res, callbackFun){
 		"accountId" : req.session.user.uuid
 	};
 
-	var agFields = 'agentId name phone email skill isSupervisor hubs';
+	var agFields = 'agentId name phone email skill isSupervisor hubs updateKey';
 
 	CQDBCtrl.getAgReferData(conditions, agFields, function(err, doc){
 		if (!!err || !doc)

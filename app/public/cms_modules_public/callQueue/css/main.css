@@ -55,6 +55,8 @@
 	padding-left: 8px;
 	width: 150px;
 	height: 50px;
+	float: left;
+	margin: 10px 0 0 10px;
 }
 
 .agentItem dt {
@@ -87,15 +89,7 @@
     color: #fff;
 }
 
-#agentList {
-	margin: 10px 0 0 20px;
-}
-
 #popupAddAgent {
 	position: relative;
 	top: -2px;
-}
-
-#hubSelector {
-	width: 156px;
 }

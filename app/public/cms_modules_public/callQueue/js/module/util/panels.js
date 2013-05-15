@@ -1,34 +1,32 @@
-define([ 'jquery', 'meta/ShareObj', 'SYLIB/mustache'], function($, ShareObj, Mustache){
+define([ 'jquery', 'meta/ShareObj', 'SYLIB/mustache', 'UTILS/panels'], function($, ShareObj, Mustache, Panel){
 	var Panels = {
-		getHubSelectorHtml : function(id, isMultiple){
-			var tmp = [];
-			var hasHub = false;
-			tmp.push('<select size="4"');
-			if (!!isMultiple)
-				tmp.push('multiple id="');
-			else
-				tmp.push('id="');
+		getHubSelectorHtml : function(_id, selectedArray){
+			var _ValueObj = [];
 
-			tmp.push(id);
-			tmp.push('">');
 			for (id in  ShareObj.CallHubList)
 			{
-				hasHub = true;
 				var tmpHub = ShareObj.CallHubList[id];
-				tmp.push('<option value="');
-				tmp.push(tmpHub.uuid);
-				tmp.push('">');
-				tmp.push(tmpHub.name);
-				tmp.push('</option>');
+				
+				_ValueObj.push("<li value='");
+				_ValueObj.push(tmpHub.uuid);
+				_ValueObj.push("' ");
+
+				if (
+						!!selectedArray && selectedArray.length > 0 &&  
+						$.inArray(tmpHub.uuid, selectedArray) != -1
+					)
+					_ValueObj.push("class='selected'");
+				
+				_ValueObj.push(">");
+				_ValueObj.push(tmpHub.name);
+				_ValueObj.push("</li>");
 			}
 
-			if (hasHub)
-			{
-				tmp.push('</select>')
-				return tmp.join("");
-			}
-			
-			return "";
+			var content = _ValueObj.join("");
+
+			return Panel.MultipleSelector.getHtml({
+				"id" : _id
+			}, content);
 		}
 	};
 
