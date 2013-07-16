@@ -13,6 +13,10 @@ exports.getCallHubModel = function(){
 	return dbHandlers.getModel('CallHub', CQ.CallHub);
 };
 
+exports.getAgentsInHubModel = function(){
+	return dbHandlers.getModel('AgentsInHub', CQ.AgentsInHub);
+};
+
 exports.getAgReferData = function(conditions, agFields, callbackFun){
 	var agentRefer = {};
 	exports.getCallHub(conditions, function(err, hubs){
@@ -50,4 +54,27 @@ exports.getAgents = function(conditions, fields, callbackFun){
 	});
 
 	db.read(CallHubModel, findHandlerInfo);
+}
+
+exports.updateAgentInHubs = function(_agentId, _hubs){
+	var AgentInHubsModel = exports.getAgentsInHubModel();
+
+	var delHandlerInfo = new dbHandlers.DelHandlerInfo(
+		{agentId : _agentId},
+		function(data)
+		{
+			if (data == "1")
+			{
+				for (i in _hubs)
+				{
+					var AgentInHubsEntity = new AgentInHubsModel({agentId : _agentId, hubId : _hubs[i]});
+					db.write(AgentInHubsEntity);
+				}
+			}
+		});
+
+	db.remove(AgentInHubsModel, delHandlerInfo);
+
+	
+		
 }

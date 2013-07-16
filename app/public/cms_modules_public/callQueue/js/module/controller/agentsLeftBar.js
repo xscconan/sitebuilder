@@ -20,6 +20,20 @@ define(['jquery', 'UTILS/panels','contentTmp/newCallHub', 'meta/CallHub', 'meta/
 				callHub.insert("#callHubList");
 				ShareObj.CallHubList[callHub.uuid] = callHub;
 			}
+		},
+		doFilter : function(){
+			$("#callHubList").html('');
+			var val = $("#hubSearch").val();
+
+			for (i in ShareObj.CallHubList)
+			{
+				var callHub = ShareObj.CallHubList[i];
+				
+				if (val.length == 0 || callHub.name.indexOf(val) != -1 )
+				{
+					callHub.insert("#callHubList");
+				}
+			}
 		}
 	};
 	 
@@ -32,6 +46,19 @@ define(['jquery', 'UTILS/panels','contentTmp/newCallHub', 'meta/CallHub', 'meta/
 			$('#colorpicker').farbtastic("#hubColor");
 
 		});
+
+		hubSearchJo = $("#hubSearch");
+		hubSearchJo.focus(function(){
+				hubSearchJo.addClass("onFocus");
+			}).blur(function(){
+				if (hubSearchJo.val() == ""){
+					hubSearchJo.removeClass("onFocus");
+				}
+			}).keyup(function(){
+				AgentCategory.doFilter();
+			}).bind('webkitspeechchange', function(){
+				AgentCategory.doFilter();
+			});
 	}
 
 	return {

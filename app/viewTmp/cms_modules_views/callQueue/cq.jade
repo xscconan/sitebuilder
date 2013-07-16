@@ -6,7 +6,7 @@ html(lang="en")
 			.leftBox
 			.rightBox
 		#leftBox
-			input(placeholder="Search Hub", x-webkit-speech="x-webkit-speech")
+			input#hubSearch(type="text", class="inputFilter", placeholder="Search Hub", x-webkit-speech="x-webkit-speech")
 			h3 Call Hub(s)
 			#callHubList
 				| No Call Hub
@@ -18,7 +18,7 @@ html(lang="en")
 					li Avaliable Agent(s)
 					li(#selectdHub)
 				.rightOpBtns
-					input(placeholder="Search Agent", x-webkit-speech="x-webkit-speech")
+					input#agentSearch(type="text", class="inputFilter", placeholder="Search Agent", x-webkit-speech="x-webkit-speech", value="")
 					button(id="popupAddAgent", class="button blue small rect", type="button") New Agent
 			#agentList
 		#footer

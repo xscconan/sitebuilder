@@ -6,15 +6,20 @@ requirejs.config({
         "UTILS" : '/ui/js/utils',
         "SHARE_JS" : '/sharedJs',
         "jquery" : '/sharedJs/libs/jquery-1.9.0.min',
+        "jquery-ui": "/ui/js/libs/jquery-ui-1.9.2.custom.min",
         "farbtastic" :  "/ui/jQueryPlugins/farbtastic/farbtastic"
     },
     shim : {
-        "farbtastic" : ["jquery"]
+        "farbtastic" : ["jquery"],
+        "jquery-ui": {
+            exports: "$",
+            deps: ['jquery']
+        }
     }
 });
 
 // Start the main logic.
-require(['jquery','controller/agentsLeftBar', 'controller/agentsMainBox', 'UTILS/panels', 'controller/cqAjaxController', 'farbtastic'], 
+require(['jquery','controller/agentsLeftBar', 'controller/agentsMainBox', 'UTILS/panels', 'controller/cqAjaxController', 'farbtastic', 'jquery-ui'], 
     function ($, leftBar, mainBox, Panel, CQAjaxCtrl) {
 
     CQAjaxCtrl.getAgentReferDatas(function(data){

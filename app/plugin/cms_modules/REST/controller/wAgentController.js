@@ -9,18 +9,6 @@ var dbHandlers = require("../../../../storge/model/MongoHandler.js");
 exports.HttpHandler = HttpHandler = function(){};
 HttpHandler.prototype = new Handler.HttpHandler();
 
-// var _doUpdateReferAgentInHub = function(_callHubId, _agentId){
-// 		var CallHubModel = CQDBCtrl.getCallHubModel();
-		
-// 		var updateHandlerInfo = new dbHandlers.UpdateHandlerInfo(
-// 			"update",
-// 			{ "hubId": _callHubId },
-// 			{$push:{ "agents" : _agentId}}
-// 	);
-
-// 	db.update(CallHubModel, updateHandlerInfo);
-// }
-
 HttpHandler.prototype.onHandle = function(req, res, callbackFun){
 	
 	if (!!req.body.updateKey && !!req.body.agentId && req.body.updateKey != crypto.createHash('md5').update(req.body.agentId + "agent").digest("hex"))
@@ -57,9 +45,10 @@ HttpHandler.prototype.onHandle = function(req, res, callbackFun){
 		_agentObj,
 		function(err, doc){
 			if (!err && doc == 1)
+			{
 				callbackFun(_agentObj);
-				// for (i in _hubs)
-				// 	_doUpdateReferAgentInHub(_hubs[i], _agentObj.agentId);
+				CQDBCtrl.updateAgentInHubs(_agentObj.agentId, _agentObj.hubs);
+			}
 			else
 			{
 				console.log(err);

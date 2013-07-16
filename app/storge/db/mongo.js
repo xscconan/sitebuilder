@@ -23,8 +23,10 @@ exports.init = function(dbConf, callBackFunction)
 }
 
 exports.write = function(db, dbEntity, callbackFun){
+	console.log(callbackFun)
 	dbEntity.save(function(err, docs){
-		 callbackFun(err, docs);
+		if (!!callbackFun)
+			callbackFun(err, docs);
 	});
 }
 
@@ -68,7 +70,7 @@ exports.remove = function(db, dbModel, handlerInfo){
 	}
 	catch(e)
 	{
-	     console.log('update error');
+	     console.log('remove error');
 		 handlerInfo.callbackFun("0");
 	}
 }

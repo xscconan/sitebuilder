@@ -9,6 +9,30 @@ define(['jquery', 'controller/agentController'],
 			AgentCtrl.initHubSelector();
 		});
 
+		$("#navigation li").click(function(){
+			var thisJo = $(this);
+			if (!thisJo.hasClass("selected"))
+			{
+				$("#navigation > .selected").removeClass("selected");
+				$(this).addClass("selected");	
+			}
+			
+		});
+
+
+		agentSearchJo = $("#agentSearch");
+		agentSearchJo.focus(function(){
+				agentSearchJo.addClass("onFocus");
+			}).blur(function(){
+				if (agentSearchJo.val() == ""){
+					agentSearchJo.removeClass("onFocus");
+				}
+			}).keyup(function(){
+				_AgentList.AgentFilter.doFilter();
+			}).bind('webkitspeechchange', function(){
+				_AgentList.AgentFilter.doFilter();
+			});
+
 		callbackFun();
 	}
 

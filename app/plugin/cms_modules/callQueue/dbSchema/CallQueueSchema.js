@@ -1,11 +1,15 @@
 var CQ = {};
 
+CQ.AgentsInHub = {
+	hubId : String,
+	agentId : String
+};
+
 CQ.CallHub = {
 	accountId : String,
 	hubId : String,
 	color : String,
-	name : String,
-	agents : Array
+	name : String
 };
 
 CQ.Agent = {

@@ -13,7 +13,12 @@ define(['jquery', 'SYLIB/mustache', 'UTILS/panels', 'contentTmp/newAgentPanel'],
 	}
 
 	Agent.prototype.getHtml = function(){
-		var tmp = '<li class="agentItem banner green" id="{{uuid}}"><dt class="title">{{name}} <font>({{skill}})</font></dt><dt class="email">{{email}}</dt><dt class="phone">{{phone}}</dt></li>';
+		var hubClass = "";
+		console.log(this.hubs);
+		if (!!this.hubs)
+			hubClass = " hasHubs";
+
+		var tmp = '<li class="agentItem banner green'+hubClass+'" id="{{uuid}}"><dt class="title">{{name}} <font>({{skill}})</font></dt><dt class="email">{{email}}</dt><dt class="phone">{{phone}}</dt><dt class="hubs"></dt></li>';
 
 		 return Mustache.render(tmp, this);
 	}
@@ -22,6 +27,8 @@ define(['jquery', 'SYLIB/mustache', 'UTILS/panels', 'contentTmp/newAgentPanel'],
 		$(parentBoxId).append(this.getHtml());
 		this.Jo = jQuery("#" + this.uuid);
 		this.eventListen();
+
+		this.setHubsIcon();
 	}
 
 	Agent.prototype.update = function(agentObj){
@@ -38,6 +45,8 @@ define(['jquery', 'SYLIB/mustache', 'UTILS/panels', 'contentTmp/newAgentPanel'],
 		this.Jo.find(".title").html(titleStr);
 		this.Jo.find(".email").html(this.email);
 		this.Jo.find(".phone").html(this.phone);
+
+		this.setHubsIcon();
 	}
 
 	Agent.prototype.popupUpdatePanel = function(){
@@ -84,6 +93,21 @@ define(['jquery', 'SYLIB/mustache', 'UTILS/panels', 'contentTmp/newAgentPanel'],
 		this.Jo.click(function(){
 			This.popupUpdatePanel();
 		});
+	}
+
+	Agent.prototype.setHubsIcon = function(){
+		var hubs = [];
+		var hubBarJo = this.Jo.find(".hubs");
+		hubBarJo.html('');
+		console.log(this.hubs);
+		for (i in this.hubs)
+		{
+			var style = $("#" + this.hubs[i]).attr("style");
+			hubs.push('<span class="ownHubs" style="');
+			hubs.push(style);
+			hubs.push('"></span>');
+		}
+		hubBarJo.html(hubs.join(""));
 	}
 
 	return Agent;
